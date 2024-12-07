@@ -13,6 +13,7 @@ const PoseSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.Mixed,
         required: true
     }
+    
 });
 
 module.exports = mongoose.model('pose', PoseSchema)
