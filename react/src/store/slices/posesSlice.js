@@ -9,6 +9,15 @@ export const fetchPose = createAsyncThunk(
     }
 );
 
+export const removePose = createAsyncThunk(
+    'pose/removePose',
+    async (id) => {
+        await axios.delete(`/api/pose/${id}`)
+        return id
+    }
+)
+
+
 export const createPose = createAsyncThunk(
     'pose/createPose',
     async (args) => {
@@ -16,7 +25,8 @@ export const createPose = createAsyncThunk(
         form.append('image', args.image.file);
         form.append('pose', args.pose);
 
-        axios.post('/api/pose', form)
+        const response = await axios.post('/api/pose', form)
+        return response.data;
     }
 )
 
@@ -43,14 +53,32 @@ const poseSlice = createSlice({
                 state.error = action.error.message;
             })
             .addCase(createPose.pending, (state) => {
+                state.loading = true;
                 state.isCreateSuccess = null;
             })
-            .addCase(createPose.fulfilled, (state) => {
+            .addCase(createPose.fulfilled, (state, action) => {
                 state.isCreateSuccess = true;
+                state.loading = false;
+                action.payload._id = action.payload._id.toString();
+                state.items.push(action.payload);
             })
             .addCase(createPose.rejected, (state) => {
+                state.loading = false;
                 state.isCreateSuccess = false;
-            });
+            })
+            .addCase(removePose.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(removePose.fulfilled, (state, action) => {
+                state.loading = false;
+                state.items = state.items.filter(item => {
+                    return item._id !== action.payload
+                })
+
+            })
+            .addCase(removePose.rejected, (state) => {
+                state.loading = false;
+            })
     }
 })
 

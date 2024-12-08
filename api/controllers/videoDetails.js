@@ -3,12 +3,14 @@ const VideoDetails = require('../models/videoDetails');
 
 const createVideoDetails = async (req, res) => {
     try {
+        const title = req.body.title;
         const video_src = req.body.video_src;
         const showCamera = req.body.showCamera;
-        const poseChallenges = req.body.poseChallenges;
-        const voiceChallenges = req.body.voiceChallenges;
+        const poseChallenges = req.body.poseChallenges || [];
+        const voiceChallenges = req.body.voiceChallenges || [];
 
         const videoDetailsToCreate = new VideoDetails({
+            title:title,
             video_src: video_src,
             showCamera: showCamera,
             poseChallenges: poseChallenges,

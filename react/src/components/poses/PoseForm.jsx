@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { UploadOutlined } from '@ant-design/icons';
 
 
-function PoseForm({onFinish, onFinishFailed}) {
+function PoseForm({onFinish, onFinishFailed,form}) {
     const [fileList, setFileList] = useState([]);
 
     const props = {
@@ -25,9 +25,14 @@ function PoseForm({onFinish, onFinishFailed}) {
         <Form
             name="basic"
             layout='horizontal'
-            
-            
-            onFinish={onFinish}
+            form={form}
+            initialValues={{
+                image:null
+            }}
+            onFinish={(data) => {
+                onFinish(data)
+                setFileList([])
+            }}
             onFinishFailed={onFinishFailed}
             autoComplete="off">
             <Form.Item

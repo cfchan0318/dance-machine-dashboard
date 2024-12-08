@@ -1,7 +1,9 @@
 const express = require('express');
 const Pose = require('../models/pose')
+const fs = require('fs/promises')
 
-const { poseDetect } = require('../utils/poseDetect')
+const { poseDetect } = require('../utils/poseDetect');
+const path = require('path');
 
 const createPose = async (req, res) => {
     try {
@@ -53,6 +55,12 @@ const getPoseById = async (req, res) => {
 const deletePose = async (req, res) => {
     try {
         const id = req.params.id;
+        const pose = await Pose.findById(id);
+        
+        const imgPath = path.join(process.cwd(),pose.image)
+        //console.log(imgPath)
+        await fs.rm(imgPath)
+
         await Pose.findByIdAndDelete(id);
         res.status(200).json({message: 'deleted'});
 

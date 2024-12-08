@@ -15,7 +15,8 @@ const port = process.env.PORT || 3000;
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_DB_URI, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+  useUnifiedTopology: true,
+  dbName: 'dance-machine'
   })
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Error connecting to MongoDB:', err));

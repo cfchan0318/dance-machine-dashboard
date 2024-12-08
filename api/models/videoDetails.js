@@ -1,19 +1,23 @@
 const mongoose = require('mongoose')
-const PoseChallengeSchema = require('./poseChallenge');
-const VoiceChallengeSchema = require('./voiceChallenge')
+const PoseChallengeSchema = require('./poseChallenge').schema;
+const VoiceChallengeSchema = require('./voiceChallenge').schema;
 
 const VideoDetailsSchema = new mongoose.Schema({
-    video_src: {
-      type: String,
-      required: true
-    },
-    showCamera: {
-      type: Boolean,
-      default: false
-    },
-    poseChallenges: [PoseChallengeSchema],
-    voiceChallenges: [VoiceChallengeSchema]
-  });
-  
+  title: {
+    type: String,
+    required: true
+  },
+  video_src: {
+    type: String,
+    required: true
+  },
+  showCamera: {
+    type: Boolean,
+    default: false
+  },
+  poseChallenges: [PoseChallengeSchema],
+  voiceChallenges: [VoiceChallengeSchema]
+});
+
 
 module.exports = mongoose.model('videoDetails', VideoDetailsSchema)

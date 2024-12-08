@@ -1,18 +1,24 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import PoseForm from "../../components/poses/PoseForm";
-import { fetchPose, createPose } from "../../store/slices/posesSlice";
-import { Card, Row, Col, Space, Table } from "antd";
+import { fetchPose, createPose,removePose } from "../../store/slices/posesSlice";
+import { Card, Row, Col, Space, Table,Form, Button } from "antd";
 import { convertToAntdTable } from "../../utils/antdTable";
 
 function PoseList() {
     const dispatch = useDispatch();
     const poseList = useSelector((state) => state.pose.items);
+    const loading = useSelector(state => state.pose.loading);
+    const [form] = Form.useForm()
+
+    const handleOnFinish = async (values) => {
+        await dispatch(createPose(values)).unwrap();
+        dispatch(fetchPose());
+    }
 
     const onFinish = (values) => {
-        
-        dispatch(createPose(values))
-        console.log("Success:", values);
+        handleOnFinish(values);
+        form.resetFields();
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -21,18 +27,25 @@ function PoseList() {
 
     let columnConfigs = {
         json: {
-            render: (text) => JSON.stringify(text),
+            render: (text) => <p><code>{JSON.stringify(text)}</code></p>,
         },
         image: {
             render: (text) => (
                 <img height={320} width={240} src={`/api${text}`} />
             ),
         },
+        _id: {
+            render: (text) => (
+                <Button type="primary" onClick={() => {
+                    dispatch(removePose(text))
+                }}>Remove</Button>
+            )
+        }
     };
 
     const { dataSource, columns } = convertToAntdTable(
         poseList,
-        ["pose", "image", "json"],
+        ["pose", "image", "json","_id"],
         columnConfigs
     );
 
@@ -48,6 +61,7 @@ function PoseList() {
                     <Col span={24}>
                         <Card title="Add new pose">
                             <PoseForm
+                                form={form}
                                 onFinish={onFinish}
                                 onFinishFailed={onFinishFailed}
                             />
@@ -57,7 +71,10 @@ function PoseList() {
                 <Row gutter={8}>
                     <Col span={24}>
                         <Card title="Poses">
-                            <Table dataSource={dataSource} columns={columns} />
+                            <Table
+                                loading={loading}
+                                dataSource={dataSource}
+                                columns={columns} />
                         </Card>
                     </Col>
                 </Row>
