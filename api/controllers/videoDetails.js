@@ -1,5 +1,6 @@
 const express = require('express');
 const VideoDetails = require('../models/videoDetails');
+const Pose = require('../models/pose');
 
 const createVideoDetails = async (req, res) => {
     try {
@@ -33,7 +34,7 @@ const getVideoDetailsById = async (req, res) => {
 
         const videoDetails = await VideoDetails.findById(id);
 
-        res.status.json(videoDetails)
+        res.status(200).json(videoDetails)
 
     } catch (error) {
         res.status(500).json({ message: error.message })
@@ -45,18 +46,18 @@ const updateVideoDetails = async (req, res) => {
         const id = req.body._id;
         const video_src = req.body.video_src;
         const showCamera = req.body.showCamera;
-        const poseChallenges = req.body.poseChallenges;
-        const voiceChallenges = req.body.voiceChallenges;
+        let poseChallenges = req.body.poseChallenges;
+        let voiceChallenges = req.body.voiceChallenges;
 
 
-        const videoDetailsToUpdate = VideoDetails.findByIdAndUpdate(id, {
+        const videoDetailsToUpdate = await VideoDetails.findByIdAndUpdate(id, {
             video_src: video_src,
             showCamera: showCamera,
             poseChallenges: poseChallenges,
             voiceChallenges: voiceChallenges,
         })
 
-        await videoDetailsToUpdate.save();
+        //await videoDetailsToUpdate.save();
 
         res.status(200).json(videoDetailsToUpdate)
 

@@ -25,6 +25,30 @@ export const fetchVideoDetailsList = createAsyncThunk(
     }
 )
 
+export const fetchVideoDetailsById = createAsyncThunk(
+    'videoDetails/fetchVideoDetailsById',
+    async (id) => {
+        const response = await axios.get(`/api/videoDetails/${id}`)
+        return response.data;
+    }
+)
+
+export const fetchAllPose = createAsyncThunk(
+    'videoDetails/fetchAllPose',
+    async () => {
+        const response = await axios.get(`/api/pose`)
+        return response.data;
+    }
+)
+
+export const updateVideoDetails = createAsyncThunk(
+    'videoDetails/updateVideoDetails',
+    async (args) => {
+        const response = await axios.put(`/api/videoDetails/${args.id}`, args.data)
+        return response.data;
+    } 
+)
+
 const videoDetailsSlice = createSlice({
     name: 'videoDetails',
     initialState: {
@@ -35,9 +59,28 @@ const videoDetailsSlice = createSlice({
         videoDetailsList: {
             items: [],
             isLoading: false,
+        },
+        videoDetails: {
+            isLoading: false,
+            poses:[],
+            data:{}
         }
     },
-    reducers: {},
+    reducers: {
+        addPoseChallenge: (state, action) => {
+            state.videoDetails.data.poseChallenges?.push(action.payload);
+        },
+        deletePoseChallenge: (state, action) => {
+            state.videoDetails.data.poseChallenges = state.videoDetails.data.poseChallenges?.filter(i => i.timestamp !== action.payload);
+        },
+        addVoiceChallenge: (state, action) => {
+            state.videoDetails.data.voiceChallenges?.push(action.payload);
+        },
+        deleteVoiceChallenge: (state, action) => {
+            state.videoDetails.data.voiceChallenges = state.videoDetails.data.voiceChallenges?.filter(i => i.timestamp !== action.payload);
+        },
+
+    },
     extraReducers: (builder) => {
         builder
             .addCase(createVideoDetails.pending, (state, action) => {
@@ -61,7 +104,44 @@ const videoDetailsSlice = createSlice({
             .addCase(fetchVideoDetailsList.rejected, (state, action) => {
                 state.videoDetailsList.isLoading = false;
             })
+        
+
+            .addCase(fetchVideoDetailsById.pending, (state, action) => {
+                state.videoDetails.isLoading = true;
+                
+            })
+            .addCase(fetchVideoDetailsById.fulfilled, (state, action) => {
+                state.videoDetails.isLoading = false;
+                state.videoDetails.data = action.payload;
+            })
+            .addCase(fetchVideoDetailsById.rejected, (state, action) => {
+                state.videoDetails.isLoading = false;
+            })
+        
+            .addCase(fetchAllPose.pending, (state, action) => {
+                state.videoDetails.isLoading = true;
+                
+            })
+            .addCase(fetchAllPose.fulfilled, (state, action) => {
+                state.videoDetails.isLoading = false;
+                state.videoDetails.poses = action.payload;
+            })
+            .addCase(fetchAllPose.rejected, (state, action) => {
+                state.videoDetails.isLoading = false;
+            })
+        
+            .addCase(updateVideoDetails.pending, (state, action) => {
+                state.videoDetails.isLoading = true;
+                
+            })
+            .addCase(updateVideoDetails.fulfilled, (state, action) => {
+                state.videoDetails.isLoading = false;
+            })
+            .addCase(updateVideoDetails.rejected, (state, action) => {
+                state.videoDetails.isLoading = false;
+            })
     }
 });
 
+export const { addPoseChallenge,addVoiceChallenge,deletePoseChallenge,deleteVoiceChallenge }  = videoDetailsSlice.actions;
 export default videoDetailsSlice.reducer;

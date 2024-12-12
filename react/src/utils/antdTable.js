@@ -39,6 +39,7 @@ function convertToAntdTable(data, displayColumns = [], columnConfigs = {}, custo
     columns = [...orderedColumns, ...remainingColumns];
   }
 
+
   return {
     dataSource,
     columns

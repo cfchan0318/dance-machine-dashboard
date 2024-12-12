@@ -15,8 +15,8 @@ const VideoDetailsSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  poseChallenges: [PoseChallengeSchema],
-  voiceChallenges: [VoiceChallengeSchema]
+  poseChallenges: [mongoose.Schema.Types.Mixed],
+  voiceChallenges: [mongoose.Schema.Types.Mixed]
 });
 
 
