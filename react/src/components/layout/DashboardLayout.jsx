@@ -13,7 +13,7 @@ const DashboardLayout = () => {
             key: "weeks",
             icon: <UnorderedListOutlined />,
             label: "Weeks",
-            onClick: () => navigate("/"),
+            onClick: () => navigate("/weeks"),
         },
         {
             key: "videoDetails",

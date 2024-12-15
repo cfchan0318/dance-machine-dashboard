@@ -3,6 +3,7 @@ import VideoDetailsForm from "../../components/videoDetails/VideoDetailsForm";
 import {
     createVideoDetails,
     fetchVideoDetailsList,
+    deleteVideoDetails
 } from "../../store/slices/videoDetailsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
@@ -41,6 +42,10 @@ function VideoDetailsList() {
         navigate(`/videoDetails/${id}`);
     }
 
+    const handleDeleteOnClick = (id) => {
+        dispatch(deleteVideoDetails(id))
+        dispatch(fetchVideoDetailsList())
+    }
 
     const customColumns = [
         {
@@ -52,7 +57,7 @@ function VideoDetailsList() {
                         console.log('Edit', record._id)
                         handleEditOnClick(record._id)
                     }}>Edit</a>
-                    <a onClick={() => alert('no delete for video detail')} style={{ marginLeft: 8 }}>Delete</a>
+                    <a onClick={() => handleDeleteOnClick(record._id)} style={{ marginLeft: 8 }}>Delete</a>
                 </span>
             )
         }

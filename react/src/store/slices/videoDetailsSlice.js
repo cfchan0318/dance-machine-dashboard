@@ -49,6 +49,13 @@ export const updateVideoDetails = createAsyncThunk(
     } 
 )
 
+export const deleteVideoDetails = createAsyncThunk(
+    'videoDetails/deleteVideoDetails',
+    async (args) => {
+        await axios.delete(`/api/videoDetails/${args}`)
+    } 
+)
+
 const videoDetailsSlice = createSlice({
     name: 'videoDetails',
     initialState: {
@@ -138,6 +145,17 @@ const videoDetailsSlice = createSlice({
                 state.videoDetails.isLoading = false;
             })
             .addCase(updateVideoDetails.rejected, (state, action) => {
+                state.videoDetails.isLoading = false;
+            })
+        
+            .addCase(deleteVideoDetails.pending, (state, action) => {
+                state.videoDetails.isLoading = true;
+                
+            })
+            .addCase(deleteVideoDetails.fulfilled, (state, action) => {
+                state.videoDetails.isLoading = false;
+            })
+            .addCase(deleteVideoDetails.rejected, (state, action) => {
                 state.videoDetails.isLoading = false;
             })
     }
