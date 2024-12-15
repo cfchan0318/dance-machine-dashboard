@@ -20,18 +20,19 @@ function Week() {
         const [id, title] = data.video.split("^");
         data.video = id;
         data.title = title;
+        console.log(data)
         dispatch(addVideo(data));
     };
 
     const handleDeleteOnClick = (record) => {
-        console.log(record)
         dispatch(removeVideo(record))
-        
+        dispatch(fetchWeekById(id));
     };
 
     const handleSaveWeek = () => {
         const data = week.data 
         dispatch(updateWeeek(data))
+        dispatch(fetchWeekById(id));
     }
 
     const customColumns = [

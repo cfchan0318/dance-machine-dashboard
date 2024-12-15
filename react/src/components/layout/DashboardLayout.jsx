@@ -10,6 +10,12 @@ const DashboardLayout = () => {
 
     const menuItems = [
         {
+            key: "users",
+            icon: <UnorderedListOutlined />,
+            label: "Users",
+            onClick: () => navigate("/users"),
+        },
+        {
             key: "weeks",
             icon: <UnorderedListOutlined />,
             label: "Weeks",
