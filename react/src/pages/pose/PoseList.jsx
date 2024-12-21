@@ -31,7 +31,7 @@ function PoseList() {
         },
         image: {
             render: (text) => (
-                <img height={320} width={240} src={`/api${text}`} />
+                <img height={320} width={240} src={`/api/${text}`} />
             ),
         },
         _id: {

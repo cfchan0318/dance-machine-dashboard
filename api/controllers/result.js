@@ -1,38 +1,38 @@
 const express = require('express');
-const User = require('../models/user')
+const Result = require('../models/Result')
 
-const createUser = async (req, res) => {
+const createResult = async (req, res) => {
     try {
-        const name = req.body.name;
-        const UserToCreate = new User({
-            name: name,
+        const json = req.body.json;
+        const ResultToCreate = new Result({
+            json:json
         });
 
-        await UserToCreate.save();
+        await ResultToCreate.save();
 
-        res.status(200).json(UserToCreate)
+        res.status(200).json(ResultToCreate)
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
 
 }
 
-const getAllUsers = async (req, res) => {
+const getAllResults = async (req, res) => {
     try {
-        const Users = await User.find()
+        const Results = await Result.find()
 
-        res.status(200).json(Users);
+        res.status(200).json(Results);
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
 
 } 
 
-const getUserById = async (req, res) => {
+const getResultById = async (req, res) => {
     try {
         const id = req.params.id;
-        const User = await User.findById(id);
-        res.status(200).json(User);
+        const Result = await Result.findById(id);
+        res.status(200).json(Result);
 
     } catch (error) {
         res.status(500).json({ error: error.message })
@@ -40,26 +40,26 @@ const getUserById = async (req, res) => {
 }
 
 
-const updateUser = async (req, res) => {
+const updateResult = async (req, res) => {
     try {
         const id = req.params.id;
-        const UserToUpdate = await User.findByIdAndUpdate(id, {
-            name: req.body.name
+        const ResultToUpdate = await Result.findByIdAndUpdate(id, {
+            json: req.body.json
         })
 
-        console.log(UserToUpdate)
+        console.log(ResultToUpdate)
 
-        res.status(200).json(UserToUpdate)
+        res.status(200).json(ResultToUpdate)
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
 
 }
 
-const removeUser = async (req, res) => {
+const removeResult = async (req, res) => {
     try {
         const id = req.params.id;
-        await User.findByIdAndDelete(id)
+        await Result.findByIdAndDelete(id)
         res.status(200).json({ message: 'removed' });
     } catch (error) {
         res.status(500).json({ error: error.message })
@@ -67,4 +67,4 @@ const removeUser = async (req, res) => {
 }
 
 
-module.exports = { createUser, getAllUsers, getUserById, updateUser, removeUser }
+module.exports = { createResult, getAllResults, getResultById, updateResult, removeResult }

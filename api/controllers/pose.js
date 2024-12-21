@@ -41,6 +41,17 @@ const getAllPose = async (req, res) => {
 
 }
 
+const getPoseByPose = async (req, res) => {
+    try {
+        const pose = req.params.pose;
+        const poses = await Pose.findOne({ pose: pose })
+
+        res.status(200).json(poses);
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+
 const getPoseById = async (req, res) => {
     try {
         const id = req.params.id;
@@ -56,17 +67,17 @@ const deletePose = async (req, res) => {
     try {
         const id = req.params.id;
         const pose = await Pose.findById(id);
-        
-        const imgPath = path.join(process.cwd(),pose.image)
+
+        const imgPath = path.join(process.cwd(), pose.image)
         //console.log(imgPath)
         await fs.rm(imgPath)
 
         await Pose.findByIdAndDelete(id);
-        res.status(200).json({message: 'deleted'});
+        res.status(200).json({ message: 'deleted' });
 
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
 }
 
-module.exports = { createPose, getAllPose, getPoseById, deletePose };
+module.exports = { createPose, getAllPose, getPoseById, deletePose, getPoseByPose };

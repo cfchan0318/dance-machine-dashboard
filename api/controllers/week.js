@@ -1,5 +1,6 @@
 const express = require('express');
 const Week = require('../models/week')
+const videoDetails = require('../models/videoDetails')
 
 const createWeeek = async (req, res) => {
     try {

@@ -18,10 +18,13 @@ const {
     createPose,
     getAllPose,
     getPoseById,
-    deletePose } = require('../controllers/pose')
+    deletePose,
+    getPoseByPose
+} = require('../controllers/pose')
 
 router.get('/', getAllPose);
 router.get('/:id', getPoseById);
+router.get('/pose/:pose',getPoseByPose)
 router.post('/', poseUpload.single('image'), createPose);
 router.delete('/:id', deletePose);
 

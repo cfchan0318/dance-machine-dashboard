@@ -1,6 +1,6 @@
 import { Row, Col, Space, Card, Spin, Table } from "antd";
 import WeekForm from "../../components/week/WeekForm";
-import { createWeek, fetchWeekList,deleteWeek } from "../../store/slices/weekSlice";
+import { createWeek, fetchWeekList } from "../../store/slices/weekSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { convertToAntdTable } from "../../utils/antdTable";
 import { useEffect } from "react";
@@ -22,10 +22,10 @@ const WeekList = () => {
         navigate(`/weeks/${id}`)
     };
 
-    const handleDeleteOnClick = (id) => {
+    /*const handleDeleteOnClick = (id) => {
         dispatch(deleteWeek(id))
         dispatch(fetchWeekList());
-    };
+    };*/
 
     const customColumns = [
         {
@@ -40,13 +40,13 @@ const WeekList = () => {
                         }}>
                         Edit
                     </a>
-                    <a
+                    {/*<a
                         onClick={() => {
                             handleDeleteOnClick(record._id);
                         }}
                         style={{ marginLeft: 8 }}>
                         Delete
-                    </a>
+                    </a>*/}
                 </span>
             ),
         },
