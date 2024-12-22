@@ -141,7 +141,9 @@ function VideoDetails() {
                                     handleOnFinish(values);
                                 }}
                             />
-                            <Table dataSource={dataSource} columns={columns} />
+                            <Table
+                                pagination={false}
+                                dataSource={dataSource} columns={columns} />
                         </Card>
                     </Col>
                 </Row>
@@ -153,6 +155,7 @@ function VideoDetails() {
                                 onFinish={handleVoiceChallengeOnFinish}
                             />
                             <Table
+                                pagination={false}
                                 dataSource={vDataSource}
                                 columns={vColumns}
                             />

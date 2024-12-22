@@ -71,11 +71,8 @@ const weekSlice = createSlice({
         },
         removeVideo: (state, action) => {
             const index = action.payload - 1;
-            if (index > 0) {
-                state.week.data.videos =
-                    state.week.data.videos.filter((v, i) => i !== index);
-            }
-
+            state.week.data.videos =
+                state.week.data.videos.filter((v, i) => i !== index);
         }
     },
     extraReducers: (builder) => {

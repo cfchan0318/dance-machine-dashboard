@@ -1,6 +1,7 @@
 const express = require('express');
 const VideoDetails = require('../models/videoDetails');
 const Pose = require('../models/pose');
+const {timestampToDecimal} = require('../utils/convert')
 
 const createVideoDetails = async (req, res) => {
     try {
@@ -49,6 +50,8 @@ const updateVideoDetails = async (req, res) => {
         let poseChallenges = req.body.poseChallenges;
         let voiceChallenges = req.body.voiceChallenges;
 
+        poseChallenges = poseChallenges.sort((a, b) => timestampToDecimal(a.timestamp) - timestampToDecimal(b.timestamp))
+        voiceChallenges= voiceChallenges.sort((a, b) => timestampToDecimal(a.timestamp) - timestampToDecimal(b.timestamp) )
 
         const videoDetailsToUpdate = await VideoDetails.findByIdAndUpdate(id, {
             video_src: video_src,

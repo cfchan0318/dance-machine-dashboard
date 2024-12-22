@@ -25,8 +25,9 @@ function Week() {
     };
 
     const handleDeleteOnClick = (record) => {
+        console.log(record)
         dispatch(removeVideo(record))
-        dispatch(fetchWeekById(id));
+        //dispatch(fetchWeekById(id));
     };
 
     const handleSaveWeek = () => {
