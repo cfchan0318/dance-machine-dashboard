@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const ResultSchema = new mongoose.Schema({
     json: {
-        type: [mongoose.Schema.Types.Mixed],
+        type: mongoose.Schema.Types.Mixed,
         required: false
     },
 });

@@ -26,6 +26,7 @@ function AddVideoForm({ form, videoDetails, onFinish, onFinishFailed }) {
                     },
                 ]}>
                 <Select
+                    showSearch
                     style={{ width: "500px" }}
                     options={videoDetails.map((item) => ({
                         value: `${item._id}^${item.title}`,

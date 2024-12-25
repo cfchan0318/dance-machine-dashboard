@@ -3,12 +3,14 @@ import poseSlice from './slices/posesSlice'
 import videoDetailsSlice from './slices/videoDetailsSlice'
 import weekSlice from './slices/weekSlice';
 import userSlice from "./slices/usersSlice";
+import resultSlice from "./slices/resultSlice";
 
 export const store = configureStore({
     reducer: {
         pose: poseSlice,
         videoDetails: videoDetailsSlice,
         week: weekSlice,
-        user: userSlice
+        user: userSlice,
+        result: resultSlice
     }
 });

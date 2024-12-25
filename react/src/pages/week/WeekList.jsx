@@ -84,7 +84,7 @@ const WeekList = () => {
                 <Row gutter={8}>
                     <Col span={24}>
                         <Card title="Weeks">
-                            <Table dataSource={dataSource} columns={columns} />
+                            <Table pagination={false} dataSource={dataSource} columns={columns} />
                         </Card>
                     </Col>
                 </Row>

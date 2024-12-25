@@ -1,7 +1,12 @@
-import { Space, Row, Col, Card, Spin, Table, Alert, Button } from "antd";
+import { Space, Row, Col, Card, Spin, Table, Alert, Button, Tag } from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchWeekById, addVideo, removeVideo,updateWeeek } from "../../store/slices/weekSlice";
+import {
+    fetchWeekById,
+    addVideo,
+    removeVideo,
+    updateWeeek,
+} from "../../store/slices/weekSlice";
 import { fetchVideoDetailsList } from "../../store/slices/videoDetailsSlice";
 
 import AddVideoForm from "../../components/week/AddVideoForm";
@@ -20,22 +25,23 @@ function Week() {
         const [id, title] = data.video.split("^");
         data.video = id;
         data.title = title;
-        console.log(data)
+        console.log(data);
         dispatch(addVideo(data));
     };
 
     const handleDeleteOnClick = (record) => {
-        console.log(record)
-        dispatch(removeVideo(record))
+        console.log(record);
+        dispatch(removeVideo(record));
         //dispatch(fetchWeekById(id));
     };
 
     const handleSaveWeek = () => {
-        const data = week.data 
-        dispatch(updateWeeek(data))
+        const data = week.data;
+        dispatch(updateWeeek(data));
         dispatch(fetchWeekById(id));
-    }
+    };
 
+   
     const customColumns = [
         {
             title: "Action",
@@ -50,13 +56,41 @@ function Week() {
                 </span>
             ),
         },
+        {
+            title: "showCamera",
+            key: "showCamera",
+            render: (text, record) => (
+                <span>{record.showCamera ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag> }</span>
+            ),
+        },
+        {
+            title: "showSessionResult",
+            key: "showSessionResult",
+            render: (text, record) => (
+                <span>{record.showSessionResult ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag> }</span>
+            ),
+        },
+        
     ];
 
-    const columnOrder = ["video", "title", "order", "action"]; // Specify the desired order of columns
+    const columnOrder = [
+        "video",
+        "title",
+        "showCamera",
+        "showSessionResult",
+        "order",
+        "action",
+    ]; // Specify the desired order of columns
 
     const { dataSource, columns } = convertToAntdTable(
         week.data.videos,
-        ["video", "title", "order","action"],
+        [
+            "video",
+            "title",
+            
+            "order",
+            "action",
+        ],
         [],
         customColumns,
         columnOrder
@@ -103,7 +137,11 @@ function Week() {
                             />
                             <br />
                             <h2>videos</h2>
-                            <Table dataSource={dataSource} columns={columns}/>
+                            <Table
+                                pagination={false}
+                                dataSource={dataSource}
+                                columns={columns}
+                            />
                         </Card>
                     </Col>
                 </Row>

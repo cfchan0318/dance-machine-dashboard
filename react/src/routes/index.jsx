@@ -4,6 +4,7 @@ import DashboardLayout from "../components/layout/DashboardLayout";
 import PoseList from "../pages/pose/PoseList";
 import VideoDetailsList from "../pages/videoDetails/VideoDetailsList";
 import VideoDetails from "../pages/videoDetails/VideoDetails";
+import ResultList from "../pages/result/ResultList";
 
 import Week from "../pages/week/Week";
 import WeekList from "../pages/week/WeekList";
@@ -15,6 +16,8 @@ export const router = createBrowserRouter([
         path: "/",
         element: <DashboardLayout />,
         children: [
+            { path: "/", element: <ResultList /> },
+            { path: "/results", element: <ResultList /> },
             { path: "/users", element: <UserList /> },
             { path: "/poses", element: <PoseList /> },
             { path: "/weeks/:id", element: <Week /> },
