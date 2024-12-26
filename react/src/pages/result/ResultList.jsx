@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { convertToAntdTable } from "../../utils/antdTable";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
+import {CSVLink} from "react-csv"
 
 const ResultList = () => {
     const dispatch = useDispatch();
@@ -12,7 +13,7 @@ const ResultList = () => {
     const resultList = useSelector((state) => state.result.resultList);
 
     const handleViewOnClick = (id) => {
-        navigate(`/result/${id}`);
+        navigate(`/results/${id}`);
     };
 
 
@@ -32,13 +33,22 @@ const ResultList = () => {
                 </span>
             ),
         },
+        {
+            title: "Export",
+            key: "export",
+            render: (text, record) => (
+                <span>
+                    <CSVLink data={record.result} filename={`${record.date}-${record.name}_${record.title}.csv`}>Download</CSVLink>
+                </span>
+            ),
+        },
     ];
 
-    const columnOrder = ["_id", "name", "date", "videoSrc", "action"]; // Specify the desired order of columns
+    const columnOrder = ["_id", "name", "date", "title","videoSrc", "action"]; // Specify the desired order of columns
 
     const { dataSource, columns } = convertToAntdTable(
         resultList.items,
-        ["_id", "name", "date", "videoSrc", "action"],
+        ["_id", "name", "date","title", "videoSrc", "action"],
         [],
         customColumns,
         columnOrder

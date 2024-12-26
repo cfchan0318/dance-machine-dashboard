@@ -5,6 +5,7 @@ import PoseList from "../pages/pose/PoseList";
 import VideoDetailsList from "../pages/videoDetails/VideoDetailsList";
 import VideoDetails from "../pages/videoDetails/VideoDetails";
 import ResultList from "../pages/result/ResultList";
+import Result from "../pages/result/Result";
 
 import Week from "../pages/week/Week";
 import WeekList from "../pages/week/WeekList";
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
         children: [
             { path: "/", element: <ResultList /> },
             { path: "/results", element: <ResultList /> },
+            { path: "/results/:id", element: <Result /> },
             { path: "/users", element: <UserList /> },
             { path: "/poses", element: <PoseList /> },
             { path: "/weeks/:id", element: <Week /> },

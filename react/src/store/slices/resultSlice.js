@@ -5,7 +5,9 @@ export const fetchResultList = createAsyncThunk(
     'result/fetchResultList',
     async () => {
         const response = await axios.get('/api/result');
-        return response.data;
+        let data = response.data
+        data = data.map(row => ({_id: row._id, ...row.json}))
+        return data;
     }
 )
 
@@ -13,7 +15,9 @@ export const fetchResultById = createAsyncThunk(
     'result/fetchResultById',
     async (id) => {
         const response = await axios.get(`/api/result/${id}`);
-        return response.data;
+        let data = response.data
+        data = {_id: data._id, ...data.json}
+        return data;
     }
 )
 
