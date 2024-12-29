@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer')
+const {authenticateToken} = require('../middleware/auth')
 
 const poseImgStorage = multer.diskStorage({
     destination: function (req, file, callback) {
@@ -25,8 +26,8 @@ const {
 router.get('/', getAllPose);
 router.get('/:id', getPoseById);
 router.get('/pose/:pose',getPoseByPose)
-router.post('/', poseUpload.single('image'), createPose);
-router.delete('/:id', deletePose);
+router.post('/',authenticateToken, poseUpload.single('image'), createPose);
+router.delete('/:id',authenticateToken, deletePose);
 
 
 module.exports = router;

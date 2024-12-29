@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-
+import getToken from '../../utils/token'
 
 export const createVideoDetails = createAsyncThunk(
     'videoDetails/createVideoDetails',
@@ -11,7 +11,7 @@ export const createVideoDetails = createAsyncThunk(
             showCamera: args.showCamera,
         }
 
-        const response = await axios.post('/api/videoDetails', data);
+        const response = await axios.post('/api/videoDetails', data, { headers: { Authorization: getToken() } });
         return response.data;
 
     }
@@ -44,16 +44,16 @@ export const fetchAllPose = createAsyncThunk(
 export const updateVideoDetails = createAsyncThunk(
     'videoDetails/updateVideoDetails',
     async (args) => {
-        const response = await axios.put(`/api/videoDetails/${args.id}`, args.data)
+        const response = await axios.put(`/api/videoDetails/${args.id}`, args.data, { headers: { Authorization: getToken() } })
         return response.data;
-    } 
+    }
 )
 
 export const deleteVideoDetails = createAsyncThunk(
     'videoDetails/deleteVideoDetails',
     async (args) => {
-        await axios.delete(`/api/videoDetails/${args}`)
-    } 
+        await axios.delete(`/api/videoDetails/${args}`, { headers: { Authorization: getToken() } })
+    }
 )
 
 const videoDetailsSlice = createSlice({
@@ -69,8 +69,8 @@ const videoDetailsSlice = createSlice({
         },
         videoDetails: {
             isLoading: false,
-            poses:[],
-            data:{}
+            poses: [],
+            data: {}
         }
     },
     reducers: {
@@ -99,10 +99,10 @@ const videoDetailsSlice = createSlice({
             .addCase(createVideoDetails.rejected, (state, action) => {
                 state.videoDetailsForm.isLoading = false;
             })
-        
+
             .addCase(fetchVideoDetailsList.pending, (state, action) => {
                 state.videoDetailsList.isLoading = true;
-                
+
             })
             .addCase(fetchVideoDetailsList.fulfilled, (state, action) => {
                 state.videoDetailsList.isLoading = false;
@@ -111,11 +111,11 @@ const videoDetailsSlice = createSlice({
             .addCase(fetchVideoDetailsList.rejected, (state, action) => {
                 state.videoDetailsList.isLoading = false;
             })
-        
+
 
             .addCase(fetchVideoDetailsById.pending, (state, action) => {
                 state.videoDetails.isLoading = true;
-                
+
             })
             .addCase(fetchVideoDetailsById.fulfilled, (state, action) => {
                 state.videoDetails.isLoading = false;
@@ -124,10 +124,10 @@ const videoDetailsSlice = createSlice({
             .addCase(fetchVideoDetailsById.rejected, (state, action) => {
                 state.videoDetails.isLoading = false;
             })
-        
+
             .addCase(fetchAllPose.pending, (state, action) => {
                 state.videoDetails.isLoading = true;
-                
+
             })
             .addCase(fetchAllPose.fulfilled, (state, action) => {
                 state.videoDetails.isLoading = false;
@@ -136,10 +136,10 @@ const videoDetailsSlice = createSlice({
             .addCase(fetchAllPose.rejected, (state, action) => {
                 state.videoDetails.isLoading = false;
             })
-        
+
             .addCase(updateVideoDetails.pending, (state, action) => {
                 state.videoDetails.isLoading = true;
-                
+
             })
             .addCase(updateVideoDetails.fulfilled, (state, action) => {
                 state.videoDetails.isLoading = false;
@@ -147,10 +147,10 @@ const videoDetailsSlice = createSlice({
             .addCase(updateVideoDetails.rejected, (state, action) => {
                 state.videoDetails.isLoading = false;
             })
-        
+
             .addCase(deleteVideoDetails.pending, (state, action) => {
                 state.videoDetails.isLoading = true;
-                
+
             })
             .addCase(deleteVideoDetails.fulfilled, (state, action) => {
                 state.videoDetails.isLoading = false;
@@ -161,5 +161,5 @@ const videoDetailsSlice = createSlice({
     }
 });
 
-export const { addPoseChallenge,addVoiceChallenge,deletePoseChallenge,deleteVoiceChallenge }  = videoDetailsSlice.actions;
+export const { addPoseChallenge, addVoiceChallenge, deletePoseChallenge, deleteVoiceChallenge } = videoDetailsSlice.actions;
 export default videoDetailsSlice.reducer;

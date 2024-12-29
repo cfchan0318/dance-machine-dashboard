@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import getToken from "../../utils/token";
 
 export const createUser = createAsyncThunk(
     'User/createUser',
@@ -7,7 +8,7 @@ export const createUser = createAsyncThunk(
         const name = args.name;
         await axios.post('/api/User', {
             name: name,
-        })
+        }, { headers: { Authorization: getToken() } })
     }
 )
 
@@ -30,7 +31,7 @@ export const fetchUserById = createAsyncThunk(
 export const updateUser = createAsyncThunk(
     'User/updateUser',
     async (args) => {
-        const response = await axios.put(`/api/User/${args._id}`, args);
+        const response = await axios.put(`/api/User/${args._id}`, args, { headers: { Authorization: getToken() } });
         return response.data;
     }
 )
@@ -38,7 +39,7 @@ export const updateUser = createAsyncThunk(
 export const deleteUser = createAsyncThunk(
     'User/deleteUser',
     async (args) => {
-        const response = await axios.delete(`/api/User/${args}`);
+        const response = await axios.delete(`/api/User/${args}`, { headers: { Authorization: getToken() } });
         return response.data;
     }
 )

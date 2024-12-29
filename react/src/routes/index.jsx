@@ -12,20 +12,25 @@ import WeekList from "../pages/week/WeekList";
 
 import UserList from "../pages/user/UserList";
 
+import ProtectedRoute from "./protectedRoute";
+
+import Login from "../pages/Login";
+
 export const router = createBrowserRouter([
     {
         path: "/",
         element: <DashboardLayout />,
         children: [
-            { path: "/", element: <ResultList /> },
-            { path: "/results", element: <ResultList /> },
-            { path: "/results/:id", element: <Result /> },
-            { path: "/users", element: <UserList /> },
-            { path: "/poses", element: <PoseList /> },
-            { path: "/weeks/:id", element: <Week /> },
-            { path: "/weeks", element: <WeekList /> },
-            { path: "/videoDetails", element: <VideoDetailsList /> },
-            { path: "/videoDetails/:id", element: <VideoDetails /> },
+            {path: "/", element: <ProtectedRoute element={<ResultList />} /> }, // Protect the root path
+            { path: "/results", element: <ProtectedRoute element={<ResultList />} /> }, // Protect the results path
+            { path: "/results/:id", element: <ProtectedRoute element={<Result />} /> }, // Protect the result detail path
+            { path: "/users", element: <ProtectedRoute element={<UserList />} /> },
+            { path: "/poses", element: <ProtectedRoute element={<PoseList />} /> },
+            { path: "/weeks/:id", element: <ProtectedRoute element={<Week />} /> },
+            { path: "/weeks", element: <ProtectedRoute element={<WeekList />} /> },
+            { path: "/videoDetails", element: <ProtectedRoute element={<VideoDetailsList />} /> },
+            { path: "/videoDetails/:id", element: <ProtectedRoute element={<VideoDetails />} /> },
+            { path: "/login", element: <Login /> }, // Add the login route
         ],
     },
 ]);

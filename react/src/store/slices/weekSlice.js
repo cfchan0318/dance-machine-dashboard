@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import getToken from '../../utils/token'
 
 export const createWeek = createAsyncThunk(
     'week/createWeek',
@@ -9,7 +10,7 @@ export const createWeek = createAsyncThunk(
         await axios.post('/api/week', {
             week: week,
             name: name,
-        })
+        },{headers:{Authorization:getToken()}})
     }
 )
 
@@ -32,7 +33,7 @@ export const fetchWeekById = createAsyncThunk(
 export const updateWeeek = createAsyncThunk(
     'week/updateWeek',
     async (args) => {
-        const response = await axios.put(`/api/week/${args._id}`, args);
+        const response = await axios.put(`/api/week/${args._id}`, args,{headers:{Authorization:getToken()}});
         return response.data;
     }
 )
@@ -40,7 +41,7 @@ export const updateWeeek = createAsyncThunk(
 export const deleteWeek = createAsyncThunk(
     'week/deleteWeek',
     async (args) => {
-        const response = await axios.delete(`/api/week/${args}`);
+        const response = await axios.delete(`/api/week/${args}`,{headers:{Authorization:getToken()}});
         return response.data;
     }
 )

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from 'axios';
+import getToken from "../../utils/token";
 
 export const fetchPose = createAsyncThunk(
     'pose/fetchPose',
@@ -12,7 +13,7 @@ export const fetchPose = createAsyncThunk(
 export const removePose = createAsyncThunk(
     'pose/removePose',
     async (id) => {
-        await axios.delete(`/api/pose/${id}`)
+        await axios.delete(`/api/pose/${id}`,{headers:{Authorization:getToken()}})
         return id
     }
 )
@@ -25,7 +26,7 @@ export const createPose = createAsyncThunk(
         form.append('image', args.image.file);
         form.append('pose', args.pose);
 
-        const response = await axios.post('/api/pose', form)
+        const response = await axios.post('/api/pose', form, {headers:{Authorization:getToken()}})
         return response.data;
     }
 )

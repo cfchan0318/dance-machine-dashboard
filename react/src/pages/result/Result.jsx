@@ -18,6 +18,11 @@ function Result() {
             render: (text, record) => <span>{record.answer}</span>,
         },
         {
+            title: "challenge",
+            key: "challenge",
+            render: (text, record) => <span>{record.challenge}</span>,
+        },
+        {
             title: "userAnswer",
             key: "userAnswer",
             render: (text, record) => <span>{record.userAnswer}</span>,
@@ -60,7 +65,7 @@ function Result() {
             <Space direction="vertical" style={{ display: "flex" }}>
                 <Row gutter={8}>
                     <Col span={24}>
-                        <Card title="Week Info">
+                        <Card title="Result Info">
                             {result.isLoading ? (
                                 <Spin />
                             ) : (
