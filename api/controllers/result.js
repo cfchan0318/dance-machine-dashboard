@@ -1,11 +1,14 @@
 const express = require('express');
 const Result = require('../models/result')
+const archiver = require('archiver');
+const { convertToCSV } = require('../utils/csv');
+const { format, addHours, parseISO } = require('date-fns')
 
 const createResult = async (req, res) => {
     try {
         const json = req.body.json;
         const ResultToCreate = new Result({
-            json:json
+            json: json
         });
 
         await ResultToCreate.save();
@@ -17,21 +20,46 @@ const createResult = async (req, res) => {
 
 }
 
+const roundObjectValues = arr => {
+    return arr.map(obj => {
+        const newObj = {};
+        for (let key in obj) {
+            newObj[key] = typeof obj[key] === 'number'
+                ? Number(obj[key].toFixed(2))
+                : obj[key];
+        }
+        return newObj;
+    });
+};
+
+
 const getAllResults = async (req, res) => {
     try {
-        const Results = await Result.find()
+        const userId = req.query.userId;
 
-        res.status(200).json(Results);
+        let allResults = await Result.find()
+        allResults = allResults.map(row => {
+            row.json.result = roundObjectValues(row.json.result)
+            return row
+        })
+
+        if (userId) {
+            allResults = allResults.filter(row => row.json.userId == userId);
+        }
+
+        res.status(200).json(allResults);
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
 
-} 
+}
 
 const getResultById = async (req, res) => {
     try {
         const id = req.params.id;
-        const result = await Result.findById(id);
+        let result = await Result.findById(id);
+        result.json.result = roundObjectValues(result.json.result);
+
         res.status(200).json(result);
 
     } catch (error) {
@@ -66,5 +94,50 @@ const removeResult = async (req, res) => {
     }
 }
 
+const convertToHKTime = (utcDate) => {
+    try {
+        const date = parseISO(utcDate);
+        const hkDate = addHours(date, 8);
+        return format(hkDate, 'yyyy-MM-dd_HHmmss');
+    } catch (error) {
+        return '';
+    }
 
-module.exports = { createResult, getAllResults, getResultById, updateResult, removeResult }
+};
+
+const exportResultCsv = async (req, res) => {
+    // Set headers
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', 'attachment; filename=results.zip');
+
+    const archive = archiver('zip', {
+        zlib: { level: 9 }
+    });
+
+    archive.pipe(res);
+
+
+    const result_ids = req.body.resultIds;
+    if (!result_ids || result_ids.length == 0) {
+        throw new Error('no ids provided');
+    }
+
+    const results = await Result.find({ '_id': { $in: result_ids } });
+    console.log(results)
+    const csvData = results.map(row => {
+        const date = convertToHKTime(row.json.date)
+        const filename = `${date}_${row.json.name}_${row.json.title}.csv`
+        const result = row.json.result;
+        return {filename: filename, result: result}
+    })
+
+    csvData.forEach(row => {
+        const csvContent = convertToCSV(row.result);
+        archive.append(csvContent, { name: row.filename });
+    })
+
+    archive.finalize();
+}
+
+
+module.exports = { createResult, getAllResults, getResultById, updateResult, removeResult, exportResultCsv }

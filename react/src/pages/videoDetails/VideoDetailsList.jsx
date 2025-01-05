@@ -57,7 +57,7 @@ function VideoDetailsList() {
                         console.log('Edit', record._id)
                         handleEditOnClick(record._id)
                     }}>Edit</a>
-                    <a onClick={() => handleDeleteOnClick(record._id)} style={{ marginLeft: 8 }}>Delete</a>
+                    {/* {<a onClick={() => handleDeleteOnClick(record._id)} style={{ marginLeft: 8 }}>Delete</a>} */}
                 </span>
             )
         }

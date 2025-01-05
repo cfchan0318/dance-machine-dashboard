@@ -1,4 +1,4 @@
-import { Space, Row, Col, Card, Spin, Table, Alert, Button, Tag } from "antd";
+import { Space, Row, Col, Card, Spin, Table, Alert, Button, Tag,Switch } from "antd";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -6,6 +6,8 @@ import {
     addVideo,
     removeVideo,
     updateWeeek,
+    toggleShowCamera,
+    toggleShowSessionResult
 } from "../../store/slices/weekSlice";
 import { fetchVideoDetailsList } from "../../store/slices/videoDetailsSlice";
 
@@ -41,6 +43,13 @@ function Week() {
         dispatch(fetchWeekById(id));
     };
 
+    const showCameraOnChange = (key) => {
+        dispatch(toggleShowCamera(key))
+    }
+
+    const showSessionResultOnChange = (key) => {
+        dispatch(toggleShowSessionResult(key));
+    }
    
     const customColumns = [
         {
@@ -60,14 +69,15 @@ function Week() {
             title: "showCamera",
             key: "showCamera",
             render: (text, record) => (
-                <span>{record.showCamera ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag> }</span>
+                
+                <span><Switch checked={record.showCamera } onChange={()=>showCameraOnChange(record.rowId)} /></span>
             ),
         },
         {
             title: "showSessionResult",
             key: "showSessionResult",
             render: (text, record) => (
-                <span>{record.showSessionResult ? <Tag color="green">Yes</Tag> : <Tag color="red">No</Tag> }</span>
+                <span><Switch checked={record.showSessionResult } onChange={()=>showSessionResultOnChange(record.rowId)} /></span>
             ),
         },
         
@@ -141,6 +151,7 @@ function Week() {
                                 pagination={false}
                                 dataSource={dataSource}
                                 columns={columns}
+                                rowKey="rowId"
                             />
                         </Card>
                     </Col>

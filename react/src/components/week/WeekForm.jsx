@@ -1,6 +1,6 @@
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button,InputNumber } from "antd";
 
-function WeekForm({ form, onFinish, onFinishFailed }) {
+function WeekForm({ form, onFinish, onFinishFailed, clearOnClick}) {
     return (
         <Form
             name="weekForm"
@@ -15,8 +15,6 @@ function WeekForm({ form, onFinish, onFinishFailed }) {
             }}
             onFinishFailed={onFinishFailed}
             autoComplete="off">
-            
-            
             <Form.Item
                 label="Week"
                 name="week"
@@ -41,9 +39,27 @@ function WeekForm({ form, onFinish, onFinishFailed }) {
                 <Input />
             </Form.Item>
 
+            <Form.Item
+                label="Order"
+                name="order"
+                rules={[
+                    {
+                        required: true,
+                        message: "Please Enter Order",
+                    },
+                ]}>
+                <InputNumber type="number"/>
+            </Form.Item>
+
             <Form.Item label={null}>
                 <Button type="primary" htmlType="submit">
                     Submit
+                </Button>
+            </Form.Item>
+
+            <Form.Item label={null}>
+                <Button onClick={clearOnClick}>
+                    Clear
                 </Button>
             </Form.Item>
         </Form>

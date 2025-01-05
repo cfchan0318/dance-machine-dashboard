@@ -12,6 +12,7 @@ const Login = () => {
         if (data.status === 200) {
             const token = data.token;
             localStorage.setItem('token', `Bearer ${token}`);
+            localStorage.setItem('username', data.username);
             navigate('/')
         }
     };

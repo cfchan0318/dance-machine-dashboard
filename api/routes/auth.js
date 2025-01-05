@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const appUser = require('../models/appUser')
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const { authenticateToken } = require('../middleware/auth');
 
 function generateAccessToken(username) {
     return jwt.sign(username, process.env.TOKEN_SECRET, { expiresIn: '2 days' });
@@ -38,7 +39,7 @@ router.post("/register", async (req, res) => {
 
         // now create the user;
         const newUser = await appUser.create({
-            username:username,
+            username: username,
             password: hashedPassword,
         });
 
@@ -61,6 +62,9 @@ router.post("/register", async (req, res) => {
     }
 });
 
+router.get("/verify", authenticateToken, async (req, res) => {
+    res.status(200).json({ message: "ok" });
+})
 
 router.post("/login", async (req, res) => {
     try {
@@ -113,7 +117,7 @@ router.post("/login", async (req, res) => {
         // !! Don't Provide the secret openly, keep it in the .env file. I am Keeping Open just for demonstration
 
         // ** This is our JWT Token
-        const token = generateAccessToken({username: username})
+        const token = generateAccessToken({ username: username })
 
         // send the response
         res.status(200).json({
@@ -121,6 +125,7 @@ router.post("/login", async (req, res) => {
             success: true,
             message: "login success",
             token: token,
+            username: isUserExist.username,
         });
     } catch (error) {
         // Send the error message to the client

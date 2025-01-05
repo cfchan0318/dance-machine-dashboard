@@ -34,13 +34,13 @@ function PoseList() {
                 <img height={320} width={240} src={`/api/${text}`} />
             ),
         },
-        _id: {
-            render: (text) => (
-                <Button type="primary" onClick={() => {
-                    dispatch(removePose(text))
-                }}>Remove</Button>
-            )
-        }
+        // _id: {
+        //     render: (text) => (
+        //         <Button type="primary" onClick={() => {
+        //             dispatch(removePose(text))
+        //         }}>Remove</Button>
+        //     )
+        // }
     };
 
     const { dataSource, columns } = convertToAntdTable(

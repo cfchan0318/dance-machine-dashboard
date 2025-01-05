@@ -7,13 +7,18 @@ function convertToAntdTable(data, displayColumns = [], columnConfigs = {}, custo
   }
 
   // Generate dataSource with unique keys
+
   const dataSource = data.map((item, index) => ({
     key: (index + 1).toString(),
     ...item
   }));
 
+  let maxKeysRow = data.reduce((max, current) => 
+    Object.keys(current).length > Object.keys(max).length ? current : max
+  , data[0]);
+
   // Generate columns from the first object's keys
-  let columns = Object.keys(data[0])
+  let columns = Object.keys(maxKeysRow)
     .filter(key => key !== 'key') // Exclude the key field
     .map(key => ({
       title: key.charAt(0).toUpperCase() + key.slice(1),

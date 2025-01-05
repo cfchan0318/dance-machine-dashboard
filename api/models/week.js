@@ -13,6 +13,9 @@ const WeekSchema = new mongoose.Schema({
         type: [mongoose.Schema.Types.Mixed],
         required: false
     },
+    order: {
+        type: Number 
+    }
 });
 
 module.exports = mongoose.model('week', WeekSchema)

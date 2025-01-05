@@ -1,14 +1,17 @@
 const express = require('express');
 const Week = require('../models/week')
-const videoDetails = require('../models/videoDetails')
+const videoDetails = require('../models/videoDetails');
+
 
 const createWeeek = async (req, res) => {
     try {
         const week = req.body.week;
         const name = req.body.name;
+        const order = req.body.order;
         const weekToCreate = new Week({
             week: week,
             name: name,
+            order:order,
             videos:[]
         });
 
@@ -23,7 +26,7 @@ const createWeeek = async (req, res) => {
 
 const getAllWeeks = async (req, res) => {
     try {
-        const weeks = await Week.find()
+        const weeks = await Week.find().sort('order')
 
         res.status(200).json(weeks);
     } catch (error) {
@@ -48,10 +51,12 @@ const updateWeeek = async (req, res) => {
     try {
         const id = req.params.id;
         const weekToUpdate = await Week.findByIdAndUpdate(id, {
+            week: req.body.week,
+            name: req.body.name,
+            order: req.body.order,
             videos: req.body.videos
         })
 
-        console.log(weekToUpdate)
 
         res.status(200).json(weekToUpdate)
     } catch (error) {

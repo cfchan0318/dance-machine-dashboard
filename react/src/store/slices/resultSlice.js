@@ -3,8 +3,9 @@ import axios from "axios";
 
 export const fetchResultList = createAsyncThunk(
     'result/fetchResultList',
-    async () => {
-        const response = await axios.get('/api/result');
+    async (userId) => {
+        console.log(userId)
+        const response = await axios.get('/api/result',{params:{userId:userId}});
         let data = response.data
         data = data.map(row => ({_id: row._id, ...row.json}))
         return data;

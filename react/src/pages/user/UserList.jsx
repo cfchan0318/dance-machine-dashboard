@@ -4,42 +4,46 @@ import { useDispatch, useSelector } from "react-redux";
 import { convertToAntdTable } from "../../utils/antdTable";
 import { useEffect, useState } from "react";
 
-import { createUser,fetchUserList, deleteUser, updateUser } from "../../store/slices/usersSlice";
+import {
+    createUser,
+    fetchUserList,
+    deleteUser,
+    updateUser,
+} from "../../store/slices/usersSlice";
 import UserForm from "../../components/users/UserForm";
 
 const UserList = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
-    const user = useSelector(state => state.user)
+    const user = useSelector((state) => state.user);
     const [userToUpdate, setUserToUpdate] = useState(null);
 
     const handleOnFinish = (data) => {
         if (userToUpdate) {
-            userToUpdate.name = data.name
-            console.log(userToUpdate)
-            dispatch(updateUser(userToUpdate))
-            dispatch(fetchUserList())
+            userToUpdate.name = data.name;
+
+            dispatch(updateUser(userToUpdate));
+            dispatch(fetchUserList());
         } else {
-            dispatch(createUser(data))
-            dispatch(fetchUserList())
+            dispatch(createUser(data));
+            dispatch(fetchUserList());
         }
-       
     };
 
     const handleEditOnClick = (record) => {
         setUserToUpdate(record);
-        form.setFieldValue('name', record.name);
+        form.setFieldValue("name", record.name);
     };
 
     const handleDeleteOnClick = (id) => {
-        dispatch(deleteUser(id))
-        dispatch(fetchUserList())
+        dispatch(deleteUser(id));
+        dispatch(fetchUserList());
     };
 
     const handleClearOnClick = () => {
-        form.resetFields()
+        form.resetFields();
         setUserToUpdate(null);
-    }
+    };
 
     const customColumns = [
         {
@@ -54,11 +58,19 @@ const UserList = () => {
                         }}>
                         Edit
                     </a>
+                </span>
+            ),
+        },
+        {
+            title: "DELETE?",
+            key: "delete",
+            render: (text, record) => (
+                <span>
                     <a
                         onClick={() => {
                             handleDeleteOnClick(record._id);
                         }}
-                        style={{ marginLeft: 8 }}>
+                        style={{ marginLeft: 8, color: "red" }}>
                         Delete
                     </a>
                 </span>
@@ -77,7 +89,7 @@ const UserList = () => {
     );
 
     useEffect(() => {
-        dispatch(fetchUserList())
+        dispatch(fetchUserList());
     }, [dispatch]);
 
     return (
@@ -90,7 +102,11 @@ const UserList = () => {
                             {UserForm.isLoading ? (
                                 <Spin />
                             ) : (
-                                <UserForm form={form} clearOnClick={handleClearOnClick} onFinish={handleOnFinish} />
+                                <UserForm
+                                    form={form}
+                                    clearOnClick={handleClearOnClick}
+                                    onFinish={handleOnFinish}
+                                />
                             )}
                         </Card>
                     </Col>

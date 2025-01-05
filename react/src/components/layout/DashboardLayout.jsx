@@ -39,6 +39,16 @@ const DashboardLayout = () => {
             label: "Postures",
             onClick: () => navigate("/poses"),
         },
+
+        {
+            key: "logout",
+            label: "Logout",
+            icon: <UserOutlined />,
+            onClick: () => {
+                localStorage.clear();
+                navigate("/login")
+            },
+        },
     ];
 
     return (
