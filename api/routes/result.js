@@ -8,7 +8,7 @@ const { authenticateToken } = require('../middleware/auth')
 
 router.get('/', getAllResults);
 router.get('/:id', getResultById);
-router.post('/', authenticateToken, createResult);
+router.post('/', createResult);
 
 router.post('/export-csv', exportResultCsv);
 router.put('/:id', authenticateToken, updateResult);
