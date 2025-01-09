@@ -1,9 +1,7 @@
-import { Row, Col, Space, Card, Spin, Table, Form } from "antd";
-
+import { Row, Col, Space, Card, Spin, Table, Form, QRCode } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { convertToAntdTable } from "../../utils/antdTable";
 import { useEffect, useState } from "react";
-
 import {
     createUser,
     fetchUserList,
@@ -62,6 +60,15 @@ const UserList = () => {
             ),
         },
         {
+            title: "QR Code",
+            key: "qrcode",
+            render: (text, record) => (
+                <span>
+                    <QRCode value={`${import.meta.env.VITE_GAME_URL}?userId=${record._id}`} />
+                </span>
+            ),
+        },
+        {
             title: "DELETE?",
             key: "delete",
             render: (text, record) => (
@@ -78,11 +85,11 @@ const UserList = () => {
         },
     ];
 
-    const columnOrder = ["_id", "name", "action"]; // Specify the desired order of columns
+    const columnOrder = ["_id", "name", "qrcode", "action"]; // Specify the desired order of columns
 
     const { dataSource, columns } = convertToAntdTable(
         user.UserList.items,
-        ["_id", "name", "action"],
+        ["_id", "name", "qrcode", "action"],
         [],
         customColumns,
         columnOrder

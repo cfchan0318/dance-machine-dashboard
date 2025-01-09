@@ -9,7 +9,10 @@ const convertToCSV = (array) => {
     // Add data rows
     array.forEach(row => {
         const values = headers.map(header => {
-            const val = row[header]
+            let val = row[header]
+            if (!val) {
+                val = null;
+            }
             // Handle values with commas, quotes, or newlines
             if (typeof val === 'string' && (val.includes(',') || val.includes('"') || val.includes('\n'))) {
                 return `"${val.replace(/"/g, '""')}"`;

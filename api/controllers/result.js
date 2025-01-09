@@ -40,6 +40,7 @@ const getAllResults = async (req, res) => {
         let allResults = await Result.find()
         allResults = allResults.map(row => {
             row.json.result = roundObjectValues(row.json.result)
+            row.json.date = convertToHKTime(row.json.date)
             return row
         })
 
@@ -123,12 +124,22 @@ const exportResultCsv = async (req, res) => {
     }
 
     const results = await Result.find({ '_id': { $in: result_ids } });
-    console.log(results)
+    
     const csvData = results.map(row => {
         const date = convertToHKTime(row.json.date)
         const filename = `${date}_${row.json.name}_${row.json.title}.csv`
-        const result = row.json.result;
-        return {filename: filename, result: result}
+        let result = row.json.result;
+        result = result.map(row => {
+            if (row['type'] == 'posture') {
+                row.answer = null
+                row.userAnswer = null;
+                row.score = null;
+                return row;
+            } else {
+                return row;
+            }
+        })
+        return { filename: filename, result: result }
     })
 
     csvData.forEach(row => {
