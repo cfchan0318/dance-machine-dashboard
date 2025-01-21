@@ -129,6 +129,7 @@ const exportResultCsv = async (req, res) => {
         const date = convertToHKTime(row.json.date)
         const filename = `${date}_${row.json.name}_${row.json.title}.csv`
         let result = row.json.result;
+        result = roundObjectValues(result);
         result = result.map(row => {
             if (row['type'] == 'posture') {
                 row.answer = null

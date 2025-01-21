@@ -13,8 +13,12 @@ const WeekSchema = new mongoose.Schema({
         type: [mongoose.Schema.Types.Mixed],
         required: false
     },
+    isLocked: {
+        type: mongoose.Schema.Types.Boolean,
+        default: false,
+    },
     order: {
-        type: Number 
+        type: Number
     }
 });
 

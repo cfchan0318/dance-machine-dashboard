@@ -1,6 +1,6 @@
-import { Form, Input, Button,InputNumber } from "antd";
+import { Form, Input, Button, InputNumber, Switch } from "antd";
 
-function WeekForm({ form, onFinish, onFinishFailed, clearOnClick}) {
+function WeekForm({ form, onFinish, onFinishFailed, clearOnClick }) {
     return (
         <Form
             name="weekForm"
@@ -48,7 +48,11 @@ function WeekForm({ form, onFinish, onFinishFailed, clearOnClick}) {
                         message: "Please Enter Order",
                     },
                 ]}>
-                <InputNumber type="number"/>
+                <InputNumber type="number" />
+            </Form.Item>
+
+            <Form.Item label="Is Locked" name="isLocked" valuePropName="checked">
+                <Switch />
             </Form.Item>
 
             <Form.Item label={null}>
@@ -58,9 +62,7 @@ function WeekForm({ form, onFinish, onFinishFailed, clearOnClick}) {
             </Form.Item>
 
             <Form.Item label={null}>
-                <Button onClick={clearOnClick}>
-                    Clear
-                </Button>
+                <Button onClick={clearOnClick}>Clear</Button>
             </Form.Item>
         </Form>
     );

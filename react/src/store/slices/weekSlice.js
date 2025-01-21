@@ -142,10 +142,15 @@ const weekSlice = createSlice({
                 state.week.isLoading = true;
             })
             .addCase(updateWeeek.fulfilled, (state, action) => {
-                const index = state.weekList.items.findIndex(row => row._id == action.payload._id);
-                let newWeekList = [...state.weekList.items];
-                newWeekList[index] = action.payload;
-                state.weekList.items = newWeekList;
+                const index = state.weekList.items.findIndex(row => row._id === action.payload._id);
+    
+                if (index !== -1) {
+                    // Update the item at the found index
+                    state.weekList.items[index] = action.payload;
+                } else {
+                    console.warn(`Item with id ${action.payload._id} not found in weekList.items`);
+                }
+                
                 state.week.isLoading = false;
             })
             .addCase(updateWeeek.rejected, (state, action) => {

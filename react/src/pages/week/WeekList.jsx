@@ -1,4 +1,4 @@
-import { Row, Col, Space, Card, Spin, Table, Form } from "antd";
+import { Row, Col, Space, Card, Spin, Table, Form,Tag } from "antd";
 import WeekForm from "../../components/week/WeekForm";
 import {
     createWeek,
@@ -20,6 +20,7 @@ const WeekList = () => {
     const weekList = useSelector((state) => state.week.weekList);
 
     const [formWeekId, setFormWeekId] = useState(null);
+  
 
     const handleClearOnClick = () => {
         setFormWeekId(null);
@@ -27,6 +28,7 @@ const WeekList = () => {
     };
 
     const handleOnFinish = (data) => {
+       
         if (formWeekId) {
             console.log(weekList);
             let week = weekList.items.find((item) => item._id === formWeekId);
@@ -34,20 +36,24 @@ const WeekList = () => {
                 week = { ...week, ...data };
                 dispatch(updateWeeek(week));
                 setFormWeekId(null);
+                navigate(0)
             }
         } else {
             dispatch(createWeek(data));
             dispatch(fetchWeekList());
         }
         form.resetFields();
+        dispatch(fetchWeekList());
     };
 
     const handleEditInfoOnClick = (record) => {
         setFormWeekId(record._id);
+        console.log(record);
         form.setFieldsValue({
             week: record.week,
             name: record.name,
             order: record.order ? record.order : null,
+            isLocked: record.isLocked,
         });
     };
 
@@ -72,6 +78,19 @@ const WeekList = () => {
                         }}>
                         Edit Info
                     </a>
+                </span>
+            ),
+        },
+        {
+            title: "Is Locked?",
+            key: "isLocked",
+            render: (text, record) => (
+                <span>
+                    {record.isLocked ? (
+                        <Tag color="red">Yes</Tag>
+                    ) : (
+                        <Tag color="green">No</Tag>
+                    )}
                 </span>
             ),
         },
@@ -106,12 +125,14 @@ const WeekList = () => {
         },
     ];
 
-    const columnOrder = ["_id", "week", "name", "order", "action"]; // Specify the desired order of columns
+    const columnOrder = ["_id", "week", "name", "order", "isLocked", "action"]; // Specify the desired order of columns
     const columnConfigs = {
         order: {
             sorter: (a, b) => a.order - b.order,
         },
     };
+
+  
 
     const { dataSource, columns } = convertToAntdTable(
         weekList.items,

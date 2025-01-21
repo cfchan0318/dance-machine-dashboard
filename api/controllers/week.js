@@ -54,7 +54,8 @@ const updateWeeek = async (req, res) => {
             week: req.body.week,
             name: req.body.name,
             order: req.body.order,
-            videos: req.body.videos
+            videos: req.body.videos,
+            isLocked: req.body.isLocked,
         })
 
 
