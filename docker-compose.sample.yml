@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.api
+    container_name: api
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MONGO_DB_URI=mongodb://your_mongo_db_uri
+      - TOKEN_SECRET=your_secret_key
+    restart: always
+
+  react:
+    build:
+      context: ./react
+      dockerfile: Dockerfile.react
+    container_name: react
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3000 # Pass the backend URL to React
+    depends_on:
+      - api
+    restart: always

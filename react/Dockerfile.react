@@ -1,0 +1,25 @@
+# Frontend (React)
+FROM node:24-slim AS react
+
+# Install security updates
+RUN apt-get update && apt-get upgrade -y && apt-get clean
+
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the frontend code
+COPY . .
+
+# Expose the Vite development server port
+EXPOSE 5173
+# Build the React app for production
+RUN npm run build
+
+# Install a lightweight web server to serve the build output
+RUN npm install -g serve
+
+# Replace the CMD to serve the production build
+CMD ["serve", "-s", "dist", "-l", "5173"]
