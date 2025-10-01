@@ -19,7 +19,7 @@ const UserList = () => {
     const handleOnFinish = (data) => {
         if (userToUpdate) {
             userToUpdate.name = data.name;
-
+            userToUpdate.code = data.code;
             dispatch(updateUser(userToUpdate));
             dispatch(fetchUserList());
         } else {
@@ -31,6 +31,7 @@ const UserList = () => {
     const handleEditOnClick = (record) => {
         setUserToUpdate(record);
         form.setFieldValue("name", record.name);
+        form.setFieldValue("code", record.code);
     };
 
     const handleDeleteOnClick = (id) => {
@@ -64,9 +65,17 @@ const UserList = () => {
             key: "qrcode",
             render: (text, record) => (
                 <span>
-                    <QRCode value={`${import.meta.env.VITE_GAME_URL}?userId=${record._id}`} />
+                    <QRCode
+                        value={`${import.meta.env.VITE_GAME_URL}?userId=${
+                            record._id
+                        }`}
+                    />
                 </span>
             ),
+        },
+        {
+            title: "Login Code",
+            key: "code",
         },
         {
             title: "DELETE?",
@@ -85,11 +94,11 @@ const UserList = () => {
         },
     ];
 
-    const columnOrder = ["_id", "name", "qrcode", "action"]; // Specify the desired order of columns
+    const columnOrder = ["_id", "name", "qrcode", "code", "action"]; // Specify the desired order of columns
 
     const { dataSource, columns } = convertToAntdTable(
         user.UserList.items,
-        ["_id", "name", "qrcode", "action"],
+        ["_id", "name", "qrcode", "code", "action"],
         [],
         customColumns,
         columnOrder

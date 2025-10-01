@@ -26,6 +26,18 @@ function UserForm({ form, onFinish, onFinishFailed, clearOnClick }) {
                 <Input />
             </Form.Item>
 
+            <Form.Item
+                label="Login Code"
+                name="code"
+                rules={[
+                    {
+                        required: true,
+                        message: "Please Enter Login Code",
+                    },
+                ]}>
+                <Input />
+            </Form.Item>
+
             <Form.Item label={null}>
                 <Button type="primary" htmlType="submit">
                     Submit

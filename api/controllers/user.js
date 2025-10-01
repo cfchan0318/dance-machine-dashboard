@@ -4,8 +4,10 @@ const User = require('../models/user')
 const createUser = async (req, res) => {
     try {
         const name = req.body.name;
+        const code = req.body.code;
         const UserToCreate = new User({
             name: name,
+            code: code,
         });
 
         await UserToCreate.save();
@@ -39,15 +41,28 @@ const getUserById = async (req, res) => {
     }
 }
 
+const getUserIdByCode = async (req, res) => {
+    try {
+        const code = String(req.body.code);
+        const user = await User.findOne({ code: code });
+        res.status(200).json(user);
+
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+
 
 const updateUser = async (req, res) => {
     try {
+        const { name, code } = req.body;
+            
         const id = req.params.id;
+        console.log(name, code )
         const UserToUpdate = await User.findByIdAndUpdate(id, {
-            name: req.body.name
+            name: name,
+            code: code,
         })
-
-        console.log(UserToUpdate)
 
         res.status(200).json(UserToUpdate)
     } catch (error) {
@@ -67,4 +82,4 @@ const removeUser = async (req, res) => {
 }
 
 
-module.exports = { createUser, getAllUsers, getUserById, updateUser, removeUser }
+module.exports = { createUser, getAllUsers, getUserById, updateUser, removeUser,getUserIdByCode }

@@ -1,4 +1,14 @@
-import { Row, Col, Space, Card, Table, Button, Checkbox, Select } from "antd";
+import {
+    Row,
+    Col,
+    Space,
+    Card,
+    Table,
+    Button,
+    Checkbox,
+    Select,
+    Pagination,
+} from "antd";
 import { fetchResultList } from "../../store/slices/resultSlice";
 import { fetchUserList } from "../../store/slices/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,11 +24,28 @@ const ResultList = () => {
     const navigate = useNavigate();
 
     const resultList = useSelector((state) => state.result.resultList);
+    const [pagination, setPagination] = useState({
+        current: 1,
+        pageSize: 10,
+        showSizeChanger: true, // Enable pageSize selection
+        pageSizeOptions: ["5", "10", "20", "50"], // Available page sizes
+    });
+    const [total, setTotal] = useState(0);
+    const [userId, setUserId] = useState(null);
+
     const userList = useSelector((state) => state.user.UserList.items);
     const [csvExportIds, setCsvExportIds] = useState([]);
 
     const handleViewOnClick = (id) => {
         navigate(`/results/${id}`);
+    };
+
+    const onPaginationChange = (pagination) => {
+        setPagination({
+            ...pagination,
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+        });
     };
 
     const exportCsv = async () => {
@@ -122,8 +149,22 @@ const ResultList = () => {
 
     useEffect(() => {
         dispatch(fetchUserList());
-        dispatch(fetchResultList());
     }, [dispatch]);
+
+    useEffect(() => {
+        console.log("totoal count", resultList.total);
+        if (
+            resultList &&
+            typeof resultList.total === "number" &&
+            total !== resultList.total
+        ) {
+            setTotal(resultList.total);
+        }
+    }, [resultList, total]);
+
+    useEffect(() => {
+        dispatch(fetchResultList({ pagination, userId }));
+    }, [dispatch, pagination,userId]);
 
     return (
         <>
@@ -147,7 +188,7 @@ const ResultList = () => {
                                         <b>User : </b>
                                         <Select
                                             onChange={(val) => {
-                                                dispatch(fetchResultList(val));
+                                                setUserId(val)
                                                 setCsvExportIds([]);
                                             }}
                                             style={{ width: "400px" }}
@@ -156,14 +197,23 @@ const ResultList = () => {
                                                 label: <span>{row.name}</span>,
                                             }))}
                                         />
-                                        <Button onClick={() =>{dispatch(fetchResultList())}}>Clear</Button>
+                                        <Button
+                                            onClick={() => {
+                                                dispatch(fetchResultList());
+                                            }}>
+                                            Clear
+                                        </Button>
                                     </span>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col span={24}>
                                     <Table
-                                        pagination={false}
+                                        onChange={onPaginationChange}
+                                        pagination={{
+                                            ...pagination,
+                                            total: total,
+                                        }}
                                         dataSource={dataSource}
                                         columns={columns}
                                     />

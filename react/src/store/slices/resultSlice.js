@@ -3,11 +3,18 @@ import axios from "axios";
 
 export const fetchResultList = createAsyncThunk(
     'result/fetchResultList',
-    async (userId) => {
-        console.log(userId)
-        const response = await axios.get('/api/result',{params:{userId:userId}});
+    async (args) => {
+        const { pagination, userId } = args;
+        
+        let params = {
+            page: pagination.current,
+            limit: pagination.pageSize,
+            userId: userId,
+        }
+
+        const response = await axios.get('/api/result',{params:params});
         let data = response.data
-        data = data.map(row => ({_id: row._id, ...row.json}))
+        data.data = data.data.map(row => ({_id: row._id, ...row.json}))
         return data;
     }
 )
@@ -28,6 +35,7 @@ const resultSlice = createSlice({
         resultList: {
             items: [],
             isLoading: false,
+            total: 0,
             error: null,
         },
         result: {
@@ -42,14 +50,17 @@ const resultSlice = createSlice({
             //fetchResultList
             .addCase(fetchResultList.pending, (state) => {
                 state.resultList.isLoading = true;
+                state.resultList.total = 0;
             })
             .addCase(fetchResultList.fulfilled, (state, action) => {
-                state.resultList.items = action.payload;
+                state.resultList.items = action.payload.data;
                 state.resultList.isLoading = false;
+                state.resultList.total = action.payload.total;
             })
             .addCase(fetchResultList.rejected, (state, action) => {
                 state.resultList.isLoading = false;
                 state.resultList.error = action.error.message;
+                state.resultList.total = 0;
             })
             
             //fetchResultById

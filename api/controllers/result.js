@@ -1,5 +1,6 @@
 const express = require('express');
 const Result = require('../models/result')
+const User = require('../models/user')
 const archiver = require('archiver');
 const { convertToCSV } = require('../utils/csv');
 const { format, addHours, parseISO } = require('date-fns')
@@ -35,20 +36,42 @@ const roundObjectValues = arr => {
 
 const getAllResults = async (req, res) => {
     try {
-        const userId = req.query.userId;
+        const { userId, page = 1, limit = 10 } = req.query;
 
-        let allResults = await Result.find()
-        allResults = allResults.map(row => {
+        const pageNumber = parseInt(page, 10);
+        const limitNumber = parseInt(limit, 10);
+
+        var query = {};
+
+        if (userId) {
+            query['json.userId'] = userId
+        }
+
+        // Calculate the number of documents to skip
+        const skip = (pageNumber - 1) * limitNumber;
+
+
+        console.log('query', query)
+
+        const docCount = await Result.countDocuments(query);
+
+        let results = await Result.find(query).skip(skip).limit(limitNumber)
+        results = results.map(row => {
             row.json.result = roundObjectValues(row.json.result)
             row.json.date = convertToHKTime(row.json.date)
             return row
         })
 
         if (userId) {
-            allResults = allResults.filter(row => row.json.userId == userId);
+            results = results.filter(row => row.json.userId == userId);
         }
 
-        res.status(200).json(allResults);
+        res.status(200).json({
+            total: docCount,
+            data: results,
+            page: pageNumber,
+            limit: limitNumber,
+        });
     } catch (error) {
         res.status(500).json({ error: error.message })
     }
@@ -124,7 +147,7 @@ const exportResultCsv = async (req, res) => {
     }
 
     const results = await Result.find({ '_id': { $in: result_ids } });
-    
+
     const csvData = results.map(row => {
         const date = convertToHKTime(row.json.date)
         const filename = `${date}_${row.json.name}_${row.json.title}.csv`
