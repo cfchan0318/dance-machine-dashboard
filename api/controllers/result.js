@@ -8,6 +8,7 @@ const { format, addHours, parseISO } = require('date-fns')
 const createResult = async (req, res) => {
     try {
         const json = req.body.json;
+
         const ResultToCreate = new Result({
             json: json
         });
@@ -33,6 +34,74 @@ const roundObjectValues = arr => {
     });
 };
 
+const getResultListing = async (req, res) => {
+    try {
+        const { userId, page = 1, limit = 10 } = req.query;
+
+        const pageNumber = parseInt(page, 10);
+        const limitNumber = parseInt(limit, 10);
+
+        var query = {};
+
+        if (userId) {
+            query['json.userId'] = userId
+        }
+
+        // Calculate the number of documents to skip
+        const skip = (pageNumber - 1) * limitNumber;
+
+        const docCount = await Result.countDocuments(query);
+
+
+        let results = await Result.aggregate([
+            { $match: query },
+            {
+                $addFields: {
+                    userObjectId: {
+                        $toObjectId: '$json.userId', // Convert userId (string) to ObjectId
+                    },
+                },
+            },
+            {
+                $group: {
+                    _id: '$userObjectId', count: { $sum: 1 },
+                    latestDate: { $max: '$json.date' }, // Get the most recent date
+                }
+            }, // Group by userId
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'userDetails'
+                }
+            }, // Join with users collection
+            { $unwind: '$userDetails' }, // Flatten userDetails array
+            {
+                $project: {
+                    _id: 1, // Group by userId
+                    count: 1,  // Count the number of results
+                    latestDate: 1,
+                    userName: '$userDetails.name', // Include the user details
+                },
+            },
+            { $sort: { count: -1 } }, // Sort by count
+            //{ $skip: skip }, // Apply pagination
+            //{ $limit: limitNumber }, // Limit results
+        ])
+
+
+        res.status(200).json({
+            total: docCount,
+            data: results,
+            page: pageNumber,
+            limit: limitNumber,
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
+}
+
 
 const getAllResults = async (req, res) => {
     try {
@@ -50,8 +119,6 @@ const getAllResults = async (req, res) => {
         // Calculate the number of documents to skip
         const skip = (pageNumber - 1) * limitNumber;
 
-
-        console.log('query', query)
 
         const docCount = await Result.countDocuments(query);
 
@@ -175,4 +242,4 @@ const exportResultCsv = async (req, res) => {
 }
 
 
-module.exports = { createResult, getAllResults, getResultById, updateResult, removeResult, exportResultCsv }
+module.exports = { createResult, getResultListing, getAllResults, getResultById, updateResult, removeResult, exportResultCsv }

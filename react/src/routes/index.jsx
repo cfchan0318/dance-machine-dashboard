@@ -1,10 +1,13 @@
 // src/routes/index.jsx
 import { createBrowserRouter } from "react-router-dom";
 import DashboardLayout from "../components/layout/DashboardLayout";
+import AuthLayout from "../components/layout/AuthLayout";
+
 import PoseList from "../pages/pose/PoseList";
 import VideoDetailsList from "../pages/videoDetails/VideoDetailsList";
 import VideoDetails from "../pages/videoDetails/VideoDetails";
-import ResultList from "../pages/result/ResultList";
+import UserResultList from "../pages/result/USerResultList";
+import ResultListing from "../pages/result/ResultListing";
 import Result from "../pages/result/Result";
 
 import Week from "../pages/week/Week";
@@ -19,17 +22,26 @@ import NoPermission from "../pages/NoPermission";
 
 export const router = createBrowserRouter([
     {
+        path: "/login",
+        element:<Login/>,
+        
+    }, // Add the login route
+    {
         path: "/",
         element: <DashboardLayout />,
         children: [
             {
                 path: "/",
-                element: <ProtectedRoute element={<ResultList />} />,
+                element: <ProtectedRoute element={<ResultListing />} />,
             }, // Protect the root path
             {
                 path: "/results",
-                element: <ProtectedRoute element={<ResultList />} />,
+                element: <ProtectedRoute element={<ResultListing />} />,
             }, // Protect the results path
+            {
+                path: "/results-by-user/:id",
+                element: <ProtectedRoute element={<UserResultList />} />,
+            }, // Protect the result detail path
             {
                 path: "/results/:id",
                 element: <ProtectedRoute element={<Result />} />,
@@ -80,12 +92,11 @@ export const router = createBrowserRouter([
                     />
                 ),
             },
-            { path: "/login", element: <Login /> }, // Add the login route
+
             {
                 path: "/no-permission",
                 element: <NoPermission />,
             },
         ],
     },
-    
 ]);

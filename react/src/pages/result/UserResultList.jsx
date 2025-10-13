@@ -7,23 +7,26 @@ import {
     Button,
     Checkbox,
     Select,
-    Pagination,
+    Breadcrumb,
 } from "antd";
 import { fetchResultList } from "../../store/slices/resultSlice";
-import { fetchUserList } from "../../store/slices/usersSlice";
+import { fetchUserList, fetchUserById } from "../../store/slices/usersSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { convertToAntdTable } from "../../utils/antdTable";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { CSVLink } from "react-csv";
 import axios from "axios";
 import { saveAs } from "file-saver";
 
-const ResultList = () => {
+const UserResultList = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const params = useParams();
 
     const resultList = useSelector((state) => state.result.resultList);
+    const user = useSelector((state) => state.user.User);
+
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 10,
@@ -31,10 +34,21 @@ const ResultList = () => {
         pageSizeOptions: ["5", "10", "20", "50"], // Available page sizes
     });
     const [total, setTotal] = useState(0);
-    const [userId, setUserId] = useState(null);
 
-    const userList = useSelector((state) => state.user.UserList.items);
     const [csvExportIds, setCsvExportIds] = useState([]);
+
+    useEffect(() => {
+        dispatch(fetchUserById(params.id));
+        dispatch(fetchResultList({ userId: params.id }));
+    }, [dispatch, params.id]);
+
+    useEffect(() => {
+        dispatch(fetchResultList({ userId: params.id, pagination }));
+    }, [dispatch, params.id, pagination]);
+
+    useEffect(() => {
+        dispatch(fetchUserList());
+    }, [dispatch]);
 
     const handleViewOnClick = (id) => {
         navigate(`/results/${id}`);
@@ -140,16 +154,12 @@ const ResultList = () => {
     ]; // Specify the desired order of columns
 
     const { dataSource, columns } = convertToAntdTable(
-        resultList.items,
+        resultList && resultList.items ? resultList.items : [],
         ["select", "_id", "name", "date", "title", "videoSrc", "action"],
         {},
         customColumns,
         columnOrder
     );
-
-    useEffect(() => {
-        dispatch(fetchUserList());
-    }, [dispatch]);
 
     useEffect(() => {
         console.log("totoal count", resultList.total);
@@ -162,14 +172,19 @@ const ResultList = () => {
         }
     }, [resultList, total]);
 
-    useEffect(() => {
-        dispatch(fetchResultList({ pagination, userId }));
-    }, [dispatch, pagination,userId]);
-
     return (
         <>
-            <h1>Game Results</h1>
             <Space direction="vertical" style={{ display: "flex" }}>
+                <Breadcrumb
+                    items={[
+                        {
+                            title: "Results",
+                        },
+                        {
+                            title: user.data.name,
+                        },
+                    ]}
+                />
                 <Row justify="end">
                     <Col span={24}>
                         <Button onClick={() => exportCsv()}>
@@ -182,30 +197,6 @@ const ResultList = () => {
                 <Row gutter={8}>
                     <Col span={24}>
                         <Card title="Results">
-                            <Row>
-                                <Col span={24}>
-                                    <span>
-                                        <b>User : </b>
-                                        <Select
-                                            onChange={(val) => {
-                                                setUserId(val)
-                                                setCsvExportIds([]);
-                                            }}
-                                            style={{ width: "400px" }}
-                                            options={userList.map((row) => ({
-                                                value: row._id,
-                                                label: <span>{row.name}</span>,
-                                            }))}
-                                        />
-                                        <Button
-                                            onClick={() => {
-                                                dispatch(fetchResultList());
-                                            }}>
-                                            Clear
-                                        </Button>
-                                    </span>
-                                </Col>
-                            </Row>
                             <Row>
                                 <Col span={24}>
                                     <Table
@@ -227,4 +218,4 @@ const ResultList = () => {
     );
 };
 
-export default ResultList;
+export default UserResultList;

@@ -51,4 +51,24 @@ function convertToAntdTable(data, displayColumns = [], columnConfigs = {}, custo
   };
 }
 
-export { convertToAntdTable }
+/**
+ * Returns a sorter function for Ant Design Table columns.
+ * Supports both numbers and text (strings).
+ * @param {'number'|'text'} type - The data type to sort ('number' or 'text')
+ * @param {string} [dataIndex] - Optional: the key to sort by (if row is an object)
+ */
+function antdTableSorter(type, dataIndex) {
+  return (a, b) => {
+    const aValue = dataIndex ? a[dataIndex] : a;
+    const bValue = dataIndex ? b[dataIndex] : b;
+    if (type === 'number') {
+      return (Number(aValue) || 0) - (Number(bValue) || 0);
+    }
+    if (type === 'text') {
+      return String(aValue || '').localeCompare(String(bValue || ''));
+    }
+    return 0;
+  };
+}
+
+export { convertToAntdTable, antdTableSorter }

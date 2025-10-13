@@ -4,6 +4,7 @@ import PoseForm from "../../components/poses/PoseForm";
 import { fetchPose, createPose,removePose } from "../../store/slices/posesSlice";
 import { Card, Row, Col, Space, Table,Form, Button } from "antd";
 import { convertToAntdTable } from "../../utils/antdTable";
+import PageTitle from '../../components/common/PageTitle';
 
 function PoseList() {
     const dispatch = useDispatch();
@@ -55,7 +56,7 @@ function PoseList() {
 
     return (
         <>
-            <h1>Poses</h1>
+            <PageTitle>Poses</PageTitle>
             <Space direction="vertical" style={{ display: "flex" }}>
                 <Row gutter={8}>
                     <Col span={24}>

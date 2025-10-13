@@ -8,7 +8,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { convertToAntdTable } from "../../utils/antdTable";
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import PageTitle from "../../components/common/PageTitle";
 
 function VideoDetailsList() {
     const dispatch = useDispatch();
@@ -80,7 +81,7 @@ function VideoDetailsList() {
 
     return (
         <>
-            <h1>Video Details</h1>
+            <PageTitle>Video Details</PageTitle>
             <Space direction="vertical" style={{ display: "flex" }}>
                 <Row gutter={8}>
                     <Col span={24}>

@@ -14,6 +14,7 @@ import { fetchVideoDetailsList } from "../../store/slices/videoDetailsSlice";
 import AddVideoForm from "../../components/week/AddVideoForm";
 import { useParams } from "react-router";
 import { convertToAntdTable } from "../../utils/antdTable";
+import PageTitle from "../../components/common/PageTitle";
 
 function Week() {
     const { id } = useParams();
@@ -59,7 +60,7 @@ function Week() {
                 <span>
                     <a
                         onClick={() => handleDeleteOnClick(record.key)}
-                        style={{ marginLeft: 8 }}>
+                        style={{ marginLeft: 8, color:'red' }}>
                         Delete
                     </a>
                 </span>

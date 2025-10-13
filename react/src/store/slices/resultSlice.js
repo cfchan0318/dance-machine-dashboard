@@ -5,16 +5,32 @@ export const fetchResultList = createAsyncThunk(
     'result/fetchResultList',
     async (args) => {
         const { pagination, userId } = args;
-        
+
+       
+
         let params = {
-            page: pagination.current,
-            limit: pagination.pageSize,
+            page: pagination?.current || null,
+            limit: pagination?.pageSize || null,
             userId: userId,
         }
 
-        const response = await axios.get('/api/result',{params:params});
+        console.log(params);
+
+        const response = await axios.get('/api/result', { params: params });
         let data = response.data
-        data.data = data.data.map(row => ({_id: row._id, ...row.json}))
+        data.data = data.data.map(row => ({ _id: row._id, ...row.json }))
+        return data;
+    }
+)
+
+export const fetchResultListing = createAsyncThunk(
+    'result/fetchResultListing',
+    async ({ userId}) => {
+        const params = {
+            userId: userId ?? null 
+        }
+        const response = await axios.get('/api/result/listing', { params: params });
+        let data = response.data
         return data;
     }
 )
@@ -24,7 +40,7 @@ export const fetchResultById = createAsyncThunk(
     async (id) => {
         const response = await axios.get(`/api/result/${id}`);
         let data = response.data
-        data = {_id: data._id, ...data.json}
+        data = { _id: data._id, ...data.json }
         return data;
     }
 )
@@ -32,6 +48,11 @@ export const fetchResultById = createAsyncThunk(
 const resultSlice = createSlice({
     name: 'result',
     initialState: {
+        resultListing: {
+            data: [],
+            isLoading: false,
+            error: null,
+        },
         resultList: {
             items: [],
             isLoading: false,
@@ -62,7 +83,22 @@ const resultSlice = createSlice({
                 state.resultList.error = action.error.message;
                 state.resultList.total = 0;
             })
-            
+            //fetchResultListing
+            .addCase(fetchResultListing.pending, (state) => {
+                state.resultListing.isLoading = true;
+                state.resultListing.total = 0;
+            })
+            .addCase(fetchResultListing.fulfilled, (state, action) => {
+                state.resultListing.data = action.payload.data;
+                state.resultListing.isLoading = false;
+                state.resultListing.total = action.payload.total;
+            })
+            .addCase(fetchResultListing.rejected, (state, action) => {
+                state.resultListing.isLoading = false;
+                state.resultListing.error = action.error.message;
+                state.resultListing.total = 0;
+            })
+
             //fetchResultById
             .addCase(fetchResultById.pending, (state) => {
                 state.result.isLoading = true;
@@ -75,7 +111,7 @@ const resultSlice = createSlice({
                 state.result.isLoading = false;
                 state.result.error = action.error.message;
             })
-          
+
     }
 
 })

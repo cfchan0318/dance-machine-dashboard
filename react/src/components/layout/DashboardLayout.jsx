@@ -1,84 +1,73 @@
-// src/components/layout/DashboardLayout.jsx
-import { Layout, Menu } from "antd";
-import { Outlet, useNavigate } from "react-router-dom";
-import { UnorderedListOutlined, VideoCameraOutlined, UserOutlined } from "@ant-design/icons";
+import React from "react";
+import { Flex, Layout, Menu, Grid } from "antd";
+import { useLocation, matchPath } from "react-router";
+import { theme } from "antd";
+import { useState } from "react";
+import { Outlet } from "react-router";
+import { Link } from "react-router";
+import { useEffect } from "react";
 
-const { Sider, Content } = Layout;
+
+const { Header, Sider, Content, Footer } = Layout;
+const { useBreakpoint } = Grid;
+
+import SidebarMenu from "./SidebarMenu";
+
 
 const DashboardLayout = () => {
-    const navigate = useNavigate();
+    const screens = useBreakpoint();
+    const location = useLocation();
 
-    const menuItems = [
-        {
-            key: "results",
-            icon: <UnorderedListOutlined />,
-            label: "Results",
-            onClick: () => navigate("/results"),
-        },
-        {
-            key: "users",
-            icon: <UnorderedListOutlined />,
-            label: "Users",
-            onClick: () => navigate("/users"),
-        },
-        {
-            key: "weeks",
-            icon: <UnorderedListOutlined />,
-            label: "Weeks",
-            onClick: () => navigate("/weeks"),
-        },
-        {
-            key: "videoDetails",
-            icon: <VideoCameraOutlined />,
-            label: "Video Details",
-            onClick: () => navigate("/videoDetails"),
-        },
-        {
-            key: "postures",
-            icon: <UserOutlined />,
-            label: "Postures",
-            onClick: () => navigate("/poses"),
-        },
+    useEffect(() => {
+        if (!screens.md) {
+            setCollapsed(true); // collapse on small screens
+        } else {
+            setCollapsed(false); // expand on larger screens
+        }
+    }, [screens]);
 
-        {
-            key: "logout",
-            label: "Logout",
-            icon: <UserOutlined />,
-            onClick: () => {
-                localStorage.clear();
-                navigate("/login")
-            },
-        },
-    ];
+    
+
+    const [collapsed, setCollapsed] = useState(false);
+    const { token } = theme.useToken();
 
     return (
-        <Layout style={{ minHeight: "100vh" }}>
-            <Sider>
-                {/* Site Title in Sider */}
-                <div
-                    className="logo"
-                    style={{
-                        height: 64,
-                        padding: "16px",
-                        color: "white",
-                        fontSize: "16px",
-                        fontWeight: "bold",
-                        textAlign: "center",
-                        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
-                    }}>
-                    Dance Machine Dashboard
+        <Layout style={{ minHeight: "100dvh" }}>
+            <Sider
+                collapsible
+                collapsed={collapsed}
+                //breakpoint="sm"
+                collapsedWidth={80}
+                defaultCollapsed={true}
+                style={{
+                    background: token.colorBgContainer,
+                    height: "100dvh",
+                    zIndex: 10,
+                    position: "sticky",
+                    top: 0,
+                    overflow: "auto",
+                }}
+                trigger={null}>
+                <div className="h-[100dvh]">
+                    <SidebarMenu
+                        collapsed={collapsed}
+                        toggleCollapsed={() => setCollapsed(!collapsed)}
+                    />
                 </div>
-                <Menu theme="dark" mode="inline" items={menuItems} />
             </Sider>
             <Layout>
-               
-                <Content
-                    style={{
-                        margin: "24px 16px",
-                        padding: 24,
-                        background: "#fff",
-                    }}>
-                    <Outlet />
+
+                <Content className="p-3">
+                    <div
+                        style={{
+                            background: "#fff",
+                            width: "100%",
+                            height: "100%",
+                            padding: 12,
+                            borderRadius: token.borderRadiusLG,
+                        }}>
+                        <Outlet />
+                    </div>
                 </Content>
             </Layout>
         </Layout>

@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { convertToAntdTable } from "../../utils/antdTable";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import PageTitle from "../../components/common/PageTitle";
 
 const WeekList = () => {
     const dispatch = useDispatch();
@@ -148,11 +149,11 @@ const WeekList = () => {
 
     return (
         <>
-            <h1>Weeks</h1>
+            <PageTitle>Weeks</PageTitle>
             <Space direction="vertical" style={{ display: "flex" }}>
                 <Row gutter={8}>
                     <Col span={24}>
-                        <Card title="Add new pose">
+                        <Card title="Add/Edit week">
                             {weekForm.isLoading ? (
                                 <Spin />
                             ) : (

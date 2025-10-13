@@ -1,4 +1,4 @@
-import { Row, Col, Space, Card, Spin, Table, Form, QRCode } from "antd";
+import { Row, Col, Space, Card, Spin, Table, Form, QRCode, Typography } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { convertToAntdTable } from "../../utils/antdTable";
 import { useEffect, useState } from "react";
@@ -9,6 +9,7 @@ import {
     updateUser,
 } from "../../store/slices/usersSlice";
 import UserForm from "../../components/users/UserForm";
+const { Title } = Typography;
 
 const UserList = () => {
     const dispatch = useDispatch();
@@ -110,7 +111,7 @@ const UserList = () => {
 
     return (
         <>
-            <h1>Users</h1>
+            <Title level={1}>Users</Title>
             <Space direction="vertical" style={{ display: "flex" }}>
                 <Row gutter={8}>
                     <Col span={24}>
