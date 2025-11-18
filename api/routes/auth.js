@@ -9,6 +9,63 @@ function generateAccessToken(username) {
     return jwt.sign(username, process.env.TOKEN_SECRET, { expiresIn: '2 days' });
 }
 
+router.post('/updateUser/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { username, password } = req.body;
+
+        // validate input (basic)
+        if (!username && !password) {
+            return res.status(400).json({ status: 400, message: 'Nothing to update' });
+        }
+
+        // find existing user
+        const user = await appUser.findById(id);
+        if (!user) {
+            return res.status(404).json({ status: 404, message: 'User not found' });
+        }
+
+        // if username is provided, check for uniqueness (exclude current user)
+        if (username && username !== user.username) {
+            const existing = await appUser.findOne({ username });
+            if (existing) {
+                return res.status(400).json({ status: 400, message: 'Username already in use' });
+            }
+            user.username = username;
+        }
+
+        // if password provided, hash it before saving
+        if (password) {
+            const salt = await bcrypt.genSalt();
+            user.password = await bcrypt.hash(password, salt);
+        }
+
+        // save updated user
+        const updatedUser = await user.save();
+
+        // optionally generate a fresh access token (if you want)
+        const token = generateAccessToken({ id: updatedUser._id, username: updatedUser.username });
+
+        res.status(200).json({
+            status: 200,
+            success: true,
+            message: 'User updated successfully',
+            user: {
+                id: updatedUser._id,
+                username: updatedUser.username,
+            },
+            token,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+            status: 400,
+            message: error.message.toString(),
+        });
+    }
+});
+
+
 router.post("/register", async (req, res) => {
     try {
         // ** Get The User Data From Body ;

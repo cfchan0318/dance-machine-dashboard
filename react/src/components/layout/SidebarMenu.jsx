@@ -112,6 +112,11 @@ function SidebarMenu({ collapsed, toggleCollapsed }) {
                         <Link to="/poses">Postures</Link>
                     </Menu.Item>
                     <Menu.Item
+                        key="dashboard-user"
+                        icon={<FontAwesomeIcon icon={faUserGear} />}>
+                        <Link to="/dashboard-user">Dashboard Users</Link>
+                    </Menu.Item>
+                    <Menu.Item
                         key="logout"
                         icon={
                             <FontAwesomeIcon icon={faArrowRightFromBracket} />

@@ -15,6 +15,8 @@ import WeekList from "../pages/week/WeekList";
 
 import UserList from "../pages/user/UserList";
 
+import DashboardUser from "../pages/dashboardUser/DashboardUser";
+
 import ProtectedRoute from "./protectedRoute";
 
 import Login from "../pages/Login";
@@ -92,7 +94,15 @@ export const router = createBrowserRouter([
                     />
                 ),
             },
-
+             {
+                path: "/dashboard-user",
+                element: (
+                    <ProtectedRoute
+                        element={<DashboardUser />}
+                        usernames={["test"]}
+                    />
+                ),
+            },
             {
                 path: "/no-permission",
                 element: <NoPermission />,

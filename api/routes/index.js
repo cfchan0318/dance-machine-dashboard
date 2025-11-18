@@ -5,9 +5,12 @@ const weekRouter = require('./week')
 const userRouter = require('./user');
 const resultRouter = require('./result');
 const authRouter = require('./auth');
+const appUserRouter = require('./appUser')
 
 const router = express.Router();
 
+
+router.use('/app-user',appUserRouter);
 router.use('/week', weekRouter);
 router.use('/pose', poseRouter);
 router.use('/videoDetails', videdoDetailsRouter);

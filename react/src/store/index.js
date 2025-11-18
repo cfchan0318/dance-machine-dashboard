@@ -4,6 +4,7 @@ import videoDetailsSlice from './slices/videoDetailsSlice'
 import weekSlice from './slices/weekSlice';
 import userSlice from "./slices/usersSlice";
 import resultSlice from "./slices/resultSlice";
+import dashboardUserSlice from "./slices/dashboardUserSlice";
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
         videoDetails: videoDetailsSlice,
         week: weekSlice,
         user: userSlice,
-        result: resultSlice
+        result: resultSlice,
+        dashboardUser: dashboardUserSlice,
     }
 });
