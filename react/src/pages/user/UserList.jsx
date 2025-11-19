@@ -75,6 +75,17 @@ const UserList = () => {
             ),
         },
         {
+            title: "V2 QR Code",
+            key: "qrcode-v2",
+            render: (text, record) => (
+                <span>
+                    <QRCode
+                        value={`https://zdmv2.yabee.tech/dance-machine/landing?userId=${ record._id }`}
+                    />
+                </span>
+            ),
+        },
+        {
             title: "Login Code",
             key: "code",
         },
@@ -95,11 +106,11 @@ const UserList = () => {
         },
     ];
 
-    const columnOrder = ["_id", "name", "qrcode", "code", "action"]; // Specify the desired order of columns
+    const columnOrder = ["_id", "name", "qrcode",'qrcode-v2', "code", "action"]; // Specify the desired order of columns
 
     const { dataSource, columns } = convertToAntdTable(
         user.UserList.items,
-        ["_id", "name", "qrcode", "code", "action"],
+        ["_id", "name", "qrcode","qrcode-v2", "code", "action"],
         [],
         customColumns,
         columnOrder
