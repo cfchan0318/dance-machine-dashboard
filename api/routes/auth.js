@@ -12,7 +12,7 @@ function generateAccessToken(username) {
 router.post('/updateUser/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { username, password } = req.body;
+        const { username, password, role } = req.body;
 
         // validate input (basic)
         if (!username && !password) {
@@ -39,6 +39,8 @@ router.post('/updateUser/:id', async (req, res) => {
             const salt = await bcrypt.genSalt();
             user.password = await bcrypt.hash(password, salt);
         }
+
+        user.role = role;
 
         // save updated user
         const updatedUser = await user.save();
@@ -72,7 +74,7 @@ router.post("/register", async (req, res) => {
         const user = req.body;
 
         // ** destructure the information from user;
-        const { username, password } = user;
+        const { username, password, role } = user;
 
         const isUsernameAllReadyExist = await appUser.findOne({
             username: username,
@@ -98,6 +100,7 @@ router.post("/register", async (req, res) => {
         const newUser = await appUser.create({
             username: username,
             password: hashedPassword,
+            role: role,
         });
 
         // Send the newUser as  response;

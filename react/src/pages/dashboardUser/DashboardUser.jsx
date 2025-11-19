@@ -136,6 +136,11 @@ function DashboardUser() {
                                     key: "username",
                                 },
                                 {
+                                    title: "role",
+                                    dataIndex: "role",
+                                    key: "role",
+                                },
+                                {
                                     title: "Action",
                                     render: (text, record) => (
                                         <Button

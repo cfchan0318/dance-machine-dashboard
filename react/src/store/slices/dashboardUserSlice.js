@@ -2,13 +2,13 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const createOrUpdateDashboardUser = createAsyncThunk('dashboardUser/createOrUpdate', async (params) => {
-    const { username, password, userId } = params;
+    const { username, password, role, userId } = params;
 
     if (userId) {
-        const res = await axios.post(`/api/auth/updateUser/${userId}`, { username, password })
+        const res = await axios.post(`/api/auth/updateUser/${userId}`, { username, password ,role })
         return res;
     } else {
-        const res = await axios.post(`/api/auth/register`, { username, password });
+        const res = await axios.post(`/api/auth/register`, { username, password , role});
         return res;
     }
 })
