@@ -4,18 +4,24 @@ import getToken from "../../utils/token";
 
 export const createUser = createAsyncThunk(
     'User/createUser',
-    async (args) => {
-        const name = args.name;
-        await axios.post('/api/User', {
-            name: name,
-        }, { headers: { Authorization: getToken() } })
+    async (args, { rejectWithValue }) => {
+        try {
+            const name = args.name;
+            const code = args.code;
+            await axios.post('/api/user', {
+                name: name,
+                code: code,
+            }, { headers: { Authorization: getToken() } })
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
     }
 )
 
 export const fetchUserList = createAsyncThunk(
     'User/fetchUserList',
     async () => {
-        const response = await axios.get('/api/User');
+        const response = await axios.get('/api/user');
         return response.data;
     }
 )
@@ -23,23 +29,27 @@ export const fetchUserList = createAsyncThunk(
 export const fetchUserById = createAsyncThunk(
     'User/fetchUserById',
     async (id) => {
-        const response = await axios.get(`/api/User/${id}`);
+        const response = await axios.get(`/api/user/${id}`);
         return response.data;
     }
 )
 
 export const updateUser = createAsyncThunk(
     'User/updateUser',
-    async (args) => {
-        const response = await axios.put(`/api/User/${args._id}`, args, { headers: { Authorization: getToken() } });
-        return response.data;
+    async (args,{rejectWithValue}) => {
+        try {
+            const response = await axios.put(`/api/user/${args._id}`, args, { headers: { Authorization: getToken() } });
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
     }
 )
 
 export const deleteUser = createAsyncThunk(
     'User/deleteUser',
     async (args) => {
-        const response = await axios.delete(`/api/User/${args}`, { headers: { Authorization: getToken() } });
+        const response = await axios.delete(`/api/user/${args}`, { headers: { Authorization: getToken() } });
         return response.data;
     }
 )
@@ -76,7 +86,7 @@ const UserSlice = createSlice({
             })
             .addCase(createUser.rejected, (state, action) => {
                 state.UserForm.isLoading = false;
-                state.UserForm.error = action.error.message;
+                state.UserForm.error = action.payload?.error;
             })
             //fetchUserList
             .addCase(fetchUserList.pending, (state) => {
@@ -122,7 +132,7 @@ const UserSlice = createSlice({
             })
             .addCase(updateUser.rejected, (state, action) => {
                 state.User.isLoading = false;
-                state.User.error = action.error.message;
+                state.UserForm.error = action.payload?.error;
             })
     }
 

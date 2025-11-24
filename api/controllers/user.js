@@ -5,6 +5,13 @@ const createUser = async (req, res) => {
     try {
         const name = req.body.name;
         const code = req.body.code;
+
+        const sameCodeUser = await User.findOne({code:code})
+
+        if (sameCodeUser) {
+            throw new Error('user with same code exist')
+        }
+
         const UserToCreate = new User({
             name: name,
             code: code,
@@ -56,9 +63,14 @@ const getUserIdByCode = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
         const { name, code } = req.body;
-            
+
+        const sameCodeUser = await User.findOne({code:code})
+
+        if (sameCodeUser) {
+            throw new Error('user with same code exist')
+        }
+        
         const id = req.params.id;
-        console.log(name, code )
         const UserToUpdate = await User.findByIdAndUpdate(id, {
             name: name,
             code: code,

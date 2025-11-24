@@ -1,4 +1,15 @@
-import { Row, Col, Space, Card, Spin, Table, Form, QRCode, Typography } from "antd";
+import {
+    Row,
+    Col,
+    Space,
+    Card,
+    Spin,
+    Table,
+    Form,
+    QRCode,
+    Typography,
+    InputNumber,
+} from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { convertToAntdTable } from "../../utils/antdTable";
 import { useEffect, useState } from "react";
@@ -11,11 +22,22 @@ import {
 import UserForm from "../../components/users/UserForm";
 const { Title } = Typography;
 
+import { message } from "antd";
+
 const UserList = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
     const user = useSelector((state) => state.user);
+    const { error } = useSelector((state) => state.user.UserForm);
     const [userToUpdate, setUserToUpdate] = useState(null);
+
+    const [messageApi, contextHolder] = message.useMessage();
+
+    useEffect(() => {
+        if (error) {
+            messageApi.error(error);
+        }
+    }, [error, messageApi]);
 
     const handleOnFinish = (data) => {
         if (userToUpdate) {
@@ -23,9 +45,13 @@ const UserList = () => {
             userToUpdate.code = data.code;
             dispatch(updateUser(userToUpdate));
             dispatch(fetchUserList());
+            setUserToUpdate(null);
+            form.resetFields();
         } else {
             dispatch(createUser(data));
             dispatch(fetchUserList());
+            setUserToUpdate(null);
+            form.resetFields();
         }
     };
 
@@ -80,7 +106,7 @@ const UserList = () => {
             render: (text, record) => (
                 <span>
                     <QRCode
-                        value={`https://zdmv2.yabee.tech/dance-machine/landing?userId=${ record._id }`}
+                        value={`https://zdmv2.yabee.tech/dance-machine/landing?userId=${record._id}`}
                     />
                 </span>
             ),
@@ -106,11 +132,18 @@ const UserList = () => {
         },
     ];
 
-    const columnOrder = ["_id", "name", "qrcode",'qrcode-v2', "code", "action"]; // Specify the desired order of columns
+    const columnOrder = [
+        "_id",
+        "name",
+        "qrcode",
+        "qrcode-v2",
+        "code",
+        "action",
+    ]; // Specify the desired order of columns
 
     const { dataSource, columns } = convertToAntdTable(
         user.UserList.items,
-        ["_id", "name", "qrcode","qrcode-v2", "code", "action"],
+        ["_id", "name", "qrcode", "qrcode-v2", "code", "action"],
         [],
         customColumns,
         columnOrder
@@ -122,11 +155,17 @@ const UserList = () => {
 
     return (
         <>
+            {contextHolder}
             <Title level={1}>Users</Title>
             <Space direction="vertical" style={{ display: "flex" }}>
                 <Row gutter={8}>
                     <Col span={24}>
-                        <Card title="Add/update user">
+                        <Card
+                            title={
+                                userToUpdate
+                                    ? `updating user: ${userToUpdate?.name}`
+                                    : `Create User`
+                            }>
                             {UserForm.isLoading ? (
                                 <Spin />
                             ) : (
