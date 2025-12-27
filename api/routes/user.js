@@ -10,9 +10,9 @@ router.get('/:id', getUserById);
 
 
 router.post('/', authenticateToken, createUser);
-
-router.put('/:id', authenticateToken, updateUser);
 router.delete('/:id', authenticateToken, removeUser);
+router.put('/:id', authenticateToken, updateUser);
+
 
 
 module.exports = router;

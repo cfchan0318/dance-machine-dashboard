@@ -1,4 +1,5 @@
 import { Form, Input, Button } from "antd";
+import { InputNumber } from "antd";
 
 function UserForm({ form, onFinish, onFinishFailed, clearOnClick }) {
     return (
@@ -8,6 +9,7 @@ function UserForm({ form, onFinish, onFinishFailed, clearOnClick }) {
             form={form}
             initialValues={{
                 name: "",
+                code: null
             }}
             onFinish={(data) => {
                 onFinish(data);
@@ -35,7 +37,7 @@ function UserForm({ form, onFinish, onFinishFailed, clearOnClick }) {
                         message: "Please Enter Login Code",
                     },
                 ]}>
-                <Input />
+                <InputNumber minLength={6} maxLength={6}/>
             </Form.Item>
 
             <Form.Item label={null}>
