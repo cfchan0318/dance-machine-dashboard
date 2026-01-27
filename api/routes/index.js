@@ -7,11 +7,10 @@ const userRouter = require('./user');
 const resultRouter = require('./result');
 const authRouter = require('./auth');
 const appUserRouter = require('./appUser')
-const songRouter = require('./song');
+
 
 const router = express.Router();
 
-router.use('/song', songRouter);
 router.use('/app-user',appUserRouter);
 router.use('/week', weekRouter);
 router.use('/pose', poseRouter);

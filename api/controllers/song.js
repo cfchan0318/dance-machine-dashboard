@@ -4,6 +4,8 @@ const createSong = async (req, res) => {
     try {
         const photo = req.file ? `/uploads/songs/${req.file.filename}` : undefined;
 
+        console.log(photo)
+
         const songToCreate = new Song({
             songId: req.body.songId,
             name: req.body.name,

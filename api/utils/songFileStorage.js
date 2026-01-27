@@ -27,6 +27,7 @@ function checkFileExists(filePath, file) {
 }
 
 const uploadSongImageToStorage = (req, res, next) => {
+  console.log('here')
   const upload = multer({
     fileFilter: function (_req, file, cb) {
       if (!checkFileType(file, /(jpe?g|png|webp)/)) {

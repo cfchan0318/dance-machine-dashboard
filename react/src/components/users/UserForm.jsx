@@ -9,7 +9,7 @@ function UserForm({ form, onFinish, onFinishFailed, clearOnClick }) {
             form={form}
             initialValues={{
                 name: "",
-                code: null
+                code: ""
             }}
             onFinish={(data) => {
                 onFinish(data);
@@ -36,8 +36,17 @@ function UserForm({ form, onFinish, onFinishFailed, clearOnClick }) {
                         required: true,
                         message: "Please Enter Login Code",
                     },
+                    {
+                        pattern: /^\d{6}$/,
+                        message: "Login Code must be a 6-digit number",
+                    },
                 ]}>
-                <InputNumber minLength={6} maxLength={6}/>
+                <Input
+                    maxLength={6}
+                    inputMode="numeric"
+                    pattern="\d{6}"
+                    placeholder="6-digit code"
+                />
             </Form.Item>
 
             <Form.Item label={null}>
