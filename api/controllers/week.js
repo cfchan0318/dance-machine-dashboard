@@ -8,11 +8,13 @@ const createWeeek = async (req, res) => {
         const week = req.body.week;
         const name = req.body.name;
         const order = req.body.order;
+        const { isLocked } = req.body;
         const weekToCreate = new Week({
             week: week,
             name: name,
             order:order,
-            videos:[]
+            videos: [],
+            isLocked: isLocked
         });
 
         await weekToCreate.save();
