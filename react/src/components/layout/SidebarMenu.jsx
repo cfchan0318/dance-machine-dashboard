@@ -13,7 +13,8 @@ import {
     faUser,
     faUserGear,
     faBars,
-    faPoll
+    faPoll,
+    faMusic
 } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -100,6 +101,11 @@ function SidebarMenu({ collapsed, toggleCollapsed }) {
                         key="weeks"
                         icon={<FontAwesomeIcon icon={faList} />}>
                         <Link to="/weeks">Weeks</Link>
+                    </Menu.Item>
+                    <Menu.Item
+                        key="songs"
+                        icon={<FontAwesomeIcon icon={faMusic} />}>
+                        <Link to="/songs">Songs</Link>
                     </Menu.Item>
                     <Menu.Item
                         key="videoDetails"

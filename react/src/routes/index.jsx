@@ -13,6 +13,8 @@ import Result from "../pages/result/Result";
 import Week from "../pages/week/Week";
 import WeekList from "../pages/week/WeekList";
 
+import SongList from "../pages/song/SongList";
+
 import UserList from "../pages/user/UserList";
 
 import DashboardUser from "../pages/dashboardUser/DashboardUser";
@@ -72,6 +74,15 @@ export const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute
                         element={<WeekList />}
+                        usernames={["test"]}
+                    />
+                ),
+            },
+            {
+                path: "/songs",
+                element: (
+                    <ProtectedRoute
+                        element={<SongList />}
                         usernames={["test"]}
                     />
                 ),

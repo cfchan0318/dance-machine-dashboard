@@ -8,10 +8,12 @@ export const createWeek = createAsyncThunk(
         const week = args.week;
         const name = args.name;
         const order = args.order;
+        const isLocked = args.isLocked;
         await axios.post('/api/week', {
             week: week,
             name: name,
             order: order,
+            isLocked: isLocked,
         }, { headers: { Authorization: getToken() } })
     }
 )

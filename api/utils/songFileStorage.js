@@ -10,8 +10,15 @@ const storage = multer.diskStorage({
     callback(null, SONG_UPLOAD_PATH);
   },
   filename: function (_req, file, callback) {
-    // keep original filename (same behavior as existing video upload)
-    callback(null, file.originalname);
+    // If file exists, add timestamp to avoid duplicates
+    if (checkFileExists(SONG_UPLOAD_PATH, file)) {
+      const ext = path.extname(file.originalname);
+      const basename = path.basename(file.originalname, ext);
+      const timestamp = Date.now();
+      callback(null, `${basename}_${timestamp}${ext}`);
+    } else {
+      callback(null, file.originalname);
+    }
   },
 });
 
@@ -27,14 +34,10 @@ function checkFileExists(filePath, file) {
 }
 
 const uploadSongImageToStorage = (req, res, next) => {
-  console.log('here')
   const upload = multer({
     fileFilter: function (_req, file, cb) {
       if (!checkFileType(file, /(jpe?g|png|webp)/)) {
         return cb(new Error('File type not supported'), false);
-      }
-      if (checkFileExists(SONG_UPLOAD_PATH, file)) {
-        return cb(new Error('File already uploaded'), false);
       }
       cb(null, true);
     },
