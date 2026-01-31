@@ -31,15 +31,15 @@ const SongList = () => {
 
     const handleOnFinish = (data) => {
         const formData = new FormData();
-        formData.append('name', data.name);
-        formData.append('author', data.author);
-        formData.append('order', data.order);
-        formData.append('publish', data.publish ?? false);
-        formData.append('isLocked', data.isLocked ?? false);
+        formData.append("name", data.name);
+        formData.append("author", data.author);
+        formData.append("order", data.order);
+        formData.append("publish", data.publish ?? false);
+        formData.append("isLocked", data.isLocked ?? false);
 
         // Add photo if selected
         if (fileList.length > 0 && fileList[0].originFileObj) {
-            formData.append('photo', fileList[0].originFileObj);
+            formData.append("photo", fileList[0].originFileObj);
         }
 
         if (formSongId) {
@@ -67,6 +67,10 @@ const SongList = () => {
         });
         // Clear file list when editing (user can optionally upload new photo)
         setFileList([]);
+    };
+
+    const handleEditLevelsOnClick = (id) => {
+        navigate(`/songs/${id}`);
     };
 
     const handleDeleteOnClick = (id) => {
@@ -133,13 +137,27 @@ const SongList = () => {
             ),
         },
         {
-            title: "Edit",
+            title: "Edit Song Info",
             key: "edit",
             render: (text, record) => (
                 <span>
                     <a
                         onClick={() => {
                             handleEditInfoOnClick(record);
+                        }}>
+                        Edit
+                    </a>
+                </span>
+            ),
+        },
+        {
+            title: "Edit Levels",
+            key: "edit_level",
+            render: (text, record) => (
+                <span>
+                    <a
+                        onClick={() => {
+                            handleEditLevelsOnClick(record["_id"]);
                         }}>
                         Edit
                     </a>
@@ -163,7 +181,19 @@ const SongList = () => {
         },
     ];
 
-    const columnOrder = ["_id", "photo", "name", "author", "order", "publish", "isLocked", "isDeleted", "edit", "delete"];
+    const columnOrder = [
+        "_id",
+        "photo",
+        "name",
+        "author",
+        "order",
+        "publish",
+        "isLocked",
+        "isDeleted",
+        "edit",
+        "edit_level",
+        "delete",
+    ];
     const columnConfigs = {
         order: {
             sorter: (a, b) => a.order - b.order,
@@ -175,7 +205,7 @@ const SongList = () => {
         ["_id", "name", "author", "order"],
         columnConfigs,
         customColumns,
-        columnOrder
+        columnOrder,
     );
 
     useEffect(() => {

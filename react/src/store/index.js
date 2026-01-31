@@ -6,6 +6,7 @@ import userSlice from "./slices/usersSlice";
 import resultSlice from "./slices/resultSlice";
 import dashboardUserSlice from "./slices/dashboardUserSlice";
 import songSlice from "./slices/songSlice";
+import gameLevelSlice from './slices/gameLevelSlice';
 
 export const store = configureStore({
     reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
         result: resultSlice,
         dashboardUser: dashboardUserSlice,
         song: songSlice,
+        gameLevels: gameLevelSlice,
     }
 });

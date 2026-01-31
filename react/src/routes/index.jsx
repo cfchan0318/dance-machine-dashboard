@@ -14,6 +14,7 @@ import Week from "../pages/week/Week";
 import WeekList from "../pages/week/WeekList";
 
 import SongList from "../pages/song/SongList";
+import SongDetails from "../pages/song/SongDetails";
 
 import UserList from "../pages/user/UserList";
 
@@ -27,8 +28,7 @@ import NoPermission from "../pages/NoPermission";
 export const router = createBrowserRouter([
     {
         path: "/login",
-        element:<Login/>,
-        
+        element: <Login />,
     }, // Add the login route
     {
         path: "/",
@@ -88,6 +88,15 @@ export const router = createBrowserRouter([
                 ),
             },
             {
+                path: "/songs/:songId",
+                element: (
+                    <ProtectedRoute
+                        element={<SongDetails />}
+                        usernames={["test"]}
+                    />
+                ),
+            },
+            {
                 path: "/videoDetails",
                 element: (
                     <ProtectedRoute
@@ -105,7 +114,7 @@ export const router = createBrowserRouter([
                     />
                 ),
             },
-             {
+            {
                 path: "/dashboard-user",
                 element: (
                     <ProtectedRoute

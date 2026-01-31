@@ -3,6 +3,7 @@ const poseRouter = require("./pose");
 const videdoDetailsRouter = require('./videoDetails');
 const weekRouter = require('./week')
 const songRouter = require('./song')
+const gameLevelRouter = require('./gameLevel')
 const userRouter = require('./user');
 const resultRouter = require('./result');
 const authRouter = require('./auth');
@@ -19,5 +20,6 @@ router.use('/user', userRouter);
 router.use('/result', resultRouter);
 router.use('/auth', authRouter)
 router.use('/song', songRouter)
+router.use('/song/:songId/level', gameLevelRouter)
 
 module.exports = router;
