@@ -22,6 +22,7 @@ import {
     toggleShowCamera,
     toggleShowSessionResult,
     updateGameLevel,
+    deleteGameLevel,
 } from "../../store/slices/gameLevelSlice";
 import { fetchVideoDetailsList } from "../../store/slices/videoDetailsSlice";
 
@@ -29,11 +30,13 @@ import { convertToAntdTable } from "../../utils/antdTable";
 
 import GameLevelForm from "./GameLevelForm";
 import AddVideoForm from "../../components/week/AddVideoForm";
+import { useState } from "react";
 
 function SongDetails() {
     const { songId } = useParams();
     const [form] = Form.useForm();
     const dispatch = useDispatch();
+    const [levelId, setLevelId] = useState(null);
 
     const { gameLevelDropdown, gameLevelForm, level } = useSelector(
         (state) => state.gameLevels,
@@ -56,7 +59,15 @@ function SongDetails() {
 
     //LevelDropdown
     const handleOnChange = (val) => {
+        setLevelId(val);
         dispatch(getGameLevelById({ songId: songId, levelId: val }));
+    };
+
+    const handleRemoveOnClick = () => {
+        console.log(levelId);
+        if (levelId) {
+            dispatch(deleteGameLevel({ songId: songId, levelId: levelId }));
+        }
     };
 
     //Table
@@ -83,10 +94,10 @@ function SongDetails() {
     };
 
     const handleSaveLevel = () => {
-        const data ={
+        const data = {
             songId: songId,
             ...level.data,
-        }
+        };
         dispatch(updateGameLevel(data));
         //dispatch(fetchWeekById(id));
     };
@@ -157,10 +168,9 @@ function SongDetails() {
         <Space direction="vertical" style={{ display: "flex" }}>
             <Row gutter={8}>
                 <Col span={24}>
-                    <Card title="Add/Edit Level">
+                    <Card title="Add Level">
                         <GameLevelForm
                             form={form}
-                            song
                             onFinish={handleOnFinish}
                             onFinishFailed={handleOnFinishFailed}
                         />
@@ -172,50 +182,67 @@ function SongDetails() {
             <Row gutter={8}>
                 <Col span={24}>
                     <Card title="Select Level">
-                        <Select
-                            onChange={handleOnChange}
-                            style={{ width: "100%" }}
-                            options={gameLevelDropdown.levels.map((level) => ({
-                                label: level.name,
-                                value: level._id,
-                            }))}
-                        />
+                        <Row>
+                            <Col span={16}>
+                                <Select
+                                    onChange={handleOnChange}
+                                    style={{ width: "100%" }}
+                                    options={gameLevelDropdown.levels.map(
+                                        (level) => ({
+                                            label: level.name,
+                                            value: level._id,
+                                        }),
+                                    )}
+                                />
+                            </Col>
+                            <Col span={8} style={{ textAlign: 'right' }}>
+                                <Button
+                                    type="primary"
+                                    onClick={handleRemoveOnClick}>
+                                    Remove Level
+                                </Button>
+                            </Col>
+                        </Row>
                     </Card>
                 </Col>
             </Row>
-            <Row>
-                <Col span={24}>
-                    <Card
-                        title={
-                            <Row>
-                                <Col span={8}>Videos</Col>
-                                <Col
-                                    span={16}
-                                    style={{
-                                        display: "flex",
-                                        justifyContent: "flex-end",
-                                    }}>
-                                    <Button onClick={handleSaveLevel}>
-                                        Save Video Details
-                                    </Button>
-                                </Col>
-                            </Row>
-                        }>
-                        <AddVideoForm
-                            onFinish={handleAddVideo}
-                            videoDetails={videoDetails}
-                        />
-                        <br />
+            {level.data?.name ? (
+                <Row>
+                    <Col span={24}>
+                        <Card
+                            title={
+                                <Row>
+                                    <Col span={8}>Videos</Col>
+                                    <Col
+                                        span={16}
+                                        style={{
+                                            display: "flex",
+                                            justifyContent: "flex-end",
+                                        }}>
+                                        <Button onClick={handleSaveLevel}>
+                                            Save Video Details
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            }>
+                            <AddVideoForm
+                                onFinish={handleAddVideo}
+                                videoDetails={videoDetails}
+                            />
+                            <br />
 
-                        <Table
-                            pagination={false}
-                            dataSource={dataSource}
-                            columns={columns}
-                            rowKey="rowId"
-                        />
-                    </Card>
-                </Col>
-            </Row>
+                            <Table
+                                pagination={false}
+                                dataSource={dataSource}
+                                columns={columns}
+                                rowKey="rowId"
+                            />
+                        </Card>
+                    </Col>
+                </Row>
+            ) : (
+                <></>
+            )}
         </Space>
     );
 }

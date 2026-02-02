@@ -60,6 +60,21 @@ export const updateGameLevel = createAsyncThunk(
     }
 )
 
+export const deleteGameLevel = createAsyncThunk(
+    'gameLevels/deleteGameLevel',
+    async (args) => {
+        const { songId, levelId} = args;
+        await axios.delete(
+            `/api/song/${songId}/level/${levelId}`,
+            {
+                headers: {
+                    Authorization: getToken()
+                }
+            }
+        )
+        return levelId;
+    }
+)
 
 const gameLevelSlice = createSlice({
     name: 'gameLevels',
@@ -105,7 +120,7 @@ const gameLevelSlice = createSlice({
             })
             .addCase(createGameLevel.fulfilled, (state, action) => {
                 state.gameLevelForm.loading = false;
-                state.levels = [...state.levels, action.payload];
+                state.gameLevelDropdown.levels.push(action.payload);
             })
             .addCase(createGameLevel.rejected, (state, action) => {
                 state.error = action.error.message;
@@ -143,6 +158,18 @@ const gameLevelSlice = createSlice({
             .addCase(updateGameLevel.rejected, (state, action) => {
                 state.level.isLoading = false;
                 state.level.error = action.error.message;
+            })
+            //deleteGameLevel
+            .addCase(deleteGameLevel.pending, (state) => {
+                state.gameLevelDropdown.isLoading = true;
+            })
+            .addCase(deleteGameLevel.fulfilled, (state, action) => {
+                state.gameLevelDropdown.isLoading = false;
+                state.gameLevelDropdown.levels = state.gameLevelDropdown.levels.filter(i => i._id !== action.payload);
+            })
+            .addCase(deleteGameLevel.rejected, (state, action) => {
+                state.gameLevelDropdown.isLoading = false;
+                state.gameLevelDropdown.error = action.error.message;
             })
     }
 })
