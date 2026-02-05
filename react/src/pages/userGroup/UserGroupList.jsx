@@ -6,33 +6,28 @@ import {
     Spin,
     Table,
     Form,
-    QRCode,
     Typography,
-    InputNumber,
-    Tag,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { convertToAntdTable } from "../../utils/antdTable";
 import { useEffect, useState } from "react";
 import {
-    createUser,
-    fetchUserList,
-    deleteUser,
-    updateUser,
-} from "../../store/slices/usersSlice";
-import { fetchUserGroupList } from "../../store/slices/userGroupSlice";
-import UserForm from "../../components/users/UserForm";
+    createUserGroup,
+    fetchUserGroupList,
+    deleteUserGroup,
+    updateUserGroup,
+} from "../../store/slices/userGroupSlice";
+import UserGroupForm from "../../components/userGroup/UserGroupForm";
 const { Title } = Typography;
 
 import { message } from "antd";
 
-const UserList = () => {
+const UserGroupList = () => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
-    const user = useSelector((state) => state.user);
     const userGroup = useSelector((state) => state.userGroup);
-    const { error } = useSelector((state) => state.user.UserForm);
-    const [userToUpdate, setUserToUpdate] = useState(null);
+    const { error } = useSelector((state) => state.userGroup.UserGroupForm);
+    const [userGroupToUpdate, setUserGroupToUpdate] = useState(null);
 
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -43,37 +38,38 @@ const UserList = () => {
     }, [error, messageApi]);
 
     const handleOnFinish = (data) => {
-        if (userToUpdate) {
-            userToUpdate.name = data.name;
-            userToUpdate.code = data.code;
-            userToUpdate.userGroups = data.userGroups || [];
-            dispatch(updateUser(userToUpdate));
-            dispatch(fetchUserList());
-            setUserToUpdate(null);
+        if (userGroupToUpdate) {
+            userGroupToUpdate.name = data.name;
+            userGroupToUpdate.description = data.description;
+            dispatch(updateUserGroup(userGroupToUpdate)).then(() => {
+                dispatch(fetchUserGroupList());
+            });
+            setUserGroupToUpdate(null);
             form.resetFields();
         } else {
-            dispatch(createUser(data));
-            dispatch(fetchUserList());
-            setUserToUpdate(null);
+            dispatch(createUserGroup(data)).then(() => {
+                dispatch(fetchUserGroupList());
+            });
+            setUserGroupToUpdate(null);
             form.resetFields();
         }
     };
 
     const handleEditOnClick = (record) => {
-        setUserToUpdate(record);
+        setUserGroupToUpdate(record);
         form.setFieldValue("name", record.name);
-        form.setFieldValue("code", record.code);
-        form.setFieldValue("userGroups", record.userGroups?.map(g => g._id) || []);
+        form.setFieldValue("description", record.description);
     };
 
     const handleDeleteOnClick = (id) => {
-        dispatch(deleteUser(id));
-        dispatch(fetchUserList());
+        dispatch(deleteUserGroup(id)).then(() => {
+            dispatch(fetchUserGroupList());
+        });
     };
 
     const handleClearOnClick = () => {
         form.resetFields();
-        setUserToUpdate(null);
+        setUserGroupToUpdate(null);
     };
 
     const customColumns = [
@@ -91,47 +87,6 @@ const UserList = () => {
                     </a>
                 </span>
             ),
-        },
-        {
-            title: "User Groups",
-            key: "userGroups",
-            render: (text, record) => (
-                <span>
-                    {record.userGroups?.map((group) => (
-                        <Tag color="blue" key={group._id}>
-                            {group.name}
-                        </Tag>
-                    ))}
-                </span>
-            ),
-        },
-        {
-            title: "QR Code",
-            key: "qrcode",
-            render: (text, record) => (
-                <span>
-                    <QRCode
-                        value={`${import.meta.env.VITE_GAME_URL}?userId=${
-                            record._id
-                        }`}
-                    />
-                </span>
-            ),
-        },
-        {
-            title: "V2 QR Code",
-            key: "qrcode-v2",
-            render: (text, record) => (
-                <span>
-                    <QRCode
-                        value={`https://zdmv2.yabee.tech/dance-machine/landing?userId=${record._id}`}
-                    />
-                </span>
-            ),
-        },
-        {
-            title: "Login Code",
-            key: "code",
         },
         {
             title: "DELETE?",
@@ -153,47 +108,43 @@ const UserList = () => {
     const columnOrder = [
         "_id",
         "name",
-        "userGroups",
-        "qrcode",
-        "qrcode-v2",
-        "code",
+        "description",
         "action",
+        "delete"
     ]; // Specify the desired order of columns
 
     const { dataSource, columns } = convertToAntdTable(
-        user.UserList.items,
-        ["_id", "name", "qrcode", "qrcode-v2", "code", "action"],
-        ["userGroups"],
+        userGroup.UserGroupList.items,
+        ["_id", "name", "description", "action", "delete"],
+        [],
         customColumns,
         columnOrder
     );
 
     useEffect(() => {
-        dispatch(fetchUserList());
         dispatch(fetchUserGroupList());
     }, [dispatch]);
 
     return (
         <>
             {contextHolder}
-            <Title level={1}>Users</Title>
+            <Title level={1}>User Groups</Title>
             <Space direction="vertical" style={{ display: "flex" }}>
                 <Row gutter={8}>
                     <Col span={24}>
                         <Card
                             title={
-                                userToUpdate
-                                    ? `updating user: ${userToUpdate?.name}`
-                                    : `Create User`
+                                userGroupToUpdate
+                                    ? `Updating group: ${userGroupToUpdate?.name}`
+                                    : `Create User Group`
                             }>
-                            {UserForm.isLoading ? (
+                            {userGroup.UserGroupForm.isLoading ? (
                                 <Spin />
                             ) : (
-                                <UserForm
+                                <UserGroupForm
                                     form={form}
                                     clearOnClick={handleClearOnClick}
                                     onFinish={handleOnFinish}
-                                    userGroups={userGroup.UserGroupList.items}
                                 />
                             )}
                         </Card>
@@ -201,7 +152,7 @@ const UserList = () => {
                 </Row>
                 <Row gutter={8}>
                     <Col span={24}>
-                        <Card title="Users">
+                        <Card title="User Groups">
                             <Table dataSource={dataSource} columns={columns} />
                         </Card>
                     </Col>
@@ -211,4 +162,4 @@ const UserList = () => {
     );
 };
 
-export default UserList;
+export default UserGroupList;

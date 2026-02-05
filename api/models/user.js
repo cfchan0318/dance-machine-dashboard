@@ -13,6 +13,11 @@ const UserSchema = new mongoose.Schema({
         unique: true,
         sparse: true,
     },
+    // Array of user groups this user belongs to
+    userGroups: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'userGroup'
+    }]
 
 
 });

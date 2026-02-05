@@ -14,7 +14,8 @@ import {
     faUserGear,
     faBars,
     faPoll,
-    faMusic
+    faMusic,
+    faUsers
 } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -85,6 +86,11 @@ function SidebarMenu({ collapsed, toggleCollapsed }) {
                         key="users"
                         icon={<FontAwesomeIcon icon={faAddressBook} />}>
                         <Link to="/users">Users</Link>
+                    </Menu.Item>
+                    <Menu.Item
+                        key="user-groups"
+                        icon={<FontAwesomeIcon icon={faUsers} />}>
+                        <Link to="/user-groups">User Groups</Link>
                     </Menu.Item>
                  
                 </Menu>

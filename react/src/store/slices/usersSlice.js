@@ -6,11 +6,11 @@ export const createUser = createAsyncThunk(
     'User/createUser',
     async (args, { rejectWithValue }) => {
         try {
-            const name = args.name;
-            const code = args.code;
+            const { name, code, userGroups } = args;
             await axios.post('/api/user', {
-                name: name,
-                code: code,
+                name,
+                code,
+                userGroups: userGroups || [],
             }, { headers: { Authorization: getToken() } })
         } catch (error) {
             return rejectWithValue(error.response?.data || error.message);

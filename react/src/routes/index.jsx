@@ -17,6 +17,7 @@ import SongList from "../pages/song/SongList";
 import SongDetails from "../pages/song/SongDetails";
 
 import UserList from "../pages/user/UserList";
+import UserGroupList from "../pages/userGroup/UserGroupList";
 
 import DashboardUser from "../pages/dashboardUser/DashboardUser";
 
@@ -53,6 +54,10 @@ export const router = createBrowserRouter([
             {
                 path: "/users",
                 element: <ProtectedRoute element={<UserList />} />,
+            },
+            {
+                path: "/user-groups",
+                element: <ProtectedRoute element={<UserGroupList />} />,
             },
             {
                 path: "/poses",

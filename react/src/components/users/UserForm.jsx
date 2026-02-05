@@ -1,7 +1,7 @@
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, Select } from "antd";
 import { InputNumber } from "antd";
 
-function UserForm({ form, onFinish, onFinishFailed, clearOnClick }) {
+function UserForm({ form, onFinish, onFinishFailed, clearOnClick, userGroups = [] }) {
     return (
         <Form
             name="UserForm"
@@ -9,7 +9,8 @@ function UserForm({ form, onFinish, onFinishFailed, clearOnClick }) {
             form={form}
             initialValues={{
                 name: "",
-                code: ""
+                code: "",
+                userGroups: []
             }}
             onFinish={(data) => {
                 onFinish(data);
@@ -46,6 +47,20 @@ function UserForm({ form, onFinish, onFinishFailed, clearOnClick }) {
                     inputMode="numeric"
                     pattern="\d{6}"
                     placeholder="6-digit code"
+                />
+            </Form.Item>
+
+            <Form.Item
+                label="User Groups"
+                name="userGroups">
+                <Select
+                    mode="multiple"
+                    placeholder="Select user groups"
+                    style={{ minWidth: 200 }}
+                    options={userGroups.map(group => ({
+                        label: group.name,
+                        value: group._id
+                    }))}
                 />
             </Form.Item>
 
