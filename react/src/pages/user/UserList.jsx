@@ -10,10 +10,12 @@ import {
     Typography,
     InputNumber,
     Tag,
+    Input,
+    Select,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { convertToAntdTable } from "../../utils/antdTable";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
     createUser,
     fetchUserList,
@@ -33,6 +35,8 @@ const UserList = () => {
     const userGroup = useSelector((state) => state.userGroup);
     const { error } = useSelector((state) => state.user.UserForm);
     const [userToUpdate, setUserToUpdate] = useState(null);
+    const [searchName, setSearchName] = useState("");
+    const [filterGroupId, setFilterGroupId] = useState(null);
 
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -63,7 +67,10 @@ const UserList = () => {
         setUserToUpdate(record);
         form.setFieldValue("name", record.name);
         form.setFieldValue("code", record.code);
-        form.setFieldValue("userGroups", record.userGroups?.map(g => g._id) || []);
+        form.setFieldValue(
+            "userGroups",
+            record.userGroups?.map((g) => g._id) || [],
+        );
     };
 
     const handleDeleteOnClick = (id) => {
@@ -158,14 +165,32 @@ const UserList = () => {
         "qrcode-v2",
         "code",
         "action",
-    ]; // Specify the desired order of columns
+    ];
+
+    const filteredItems = useMemo(() => {
+        let items = user.UserList.items || [];
+        if (searchName) {
+            items = items.filter((u) =>
+                u.name?.toLowerCase().includes(searchName.toLowerCase()),
+            );
+        }
+        if (filterGroupId) {
+            items = items.filter((u) =>
+                u.userGroups?.some((g) => {
+                    const id = typeof g === "object" ? g._id : g;
+                    return id === filterGroupId;
+                }),
+            );
+        }
+        return items;
+    }, [user.UserList.items, searchName, filterGroupId]);
 
     const { dataSource, columns } = convertToAntdTable(
-        user.UserList.items,
+        filteredItems,
         ["_id", "name", "qrcode", "qrcode-v2", "code", "action"],
         ["userGroups"],
         customColumns,
-        columnOrder
+        columnOrder,
     );
 
     useEffect(() => {
@@ -201,7 +226,42 @@ const UserList = () => {
                 </Row>
                 <Row gutter={8}>
                     <Col span={24}>
-                        <Card title="Users">
+                        <Card title="Filter Users">
+                            <Row gutter={16}>
+                                <Col span={8}>
+                                    <Input
+                                        placeholder="Search by name"
+                                        allowClear
+                                        value={searchName}
+                                        onChange={(e) =>
+                                            setSearchName(e.target.value)
+                                        }
+                                    />
+                                </Col>
+                                <Col span={8}>
+                                    <Select
+                                        placeholder="Filter by user group"
+                                        allowClear
+                                        style={{ width: "100%" }}
+                                        value={filterGroupId}
+                                        onChange={(val) =>
+                                            setFilterGroupId(val ?? null)
+                                        }
+                                        options={userGroup.UserGroupList.items.map(
+                                            (g) => ({
+                                                label: g.name,
+                                                value: g._id,
+                                            }),
+                                        )}
+                                    />
+                                </Col>
+                            </Row>
+                        </Card>
+                    </Col>
+                </Row>
+                <Row gutter={8}>
+                    <Col span={24}>
+                        <Card>
                             <Table dataSource={dataSource} columns={columns} />
                         </Card>
                     </Col>

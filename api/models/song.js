@@ -28,6 +28,11 @@ const SongSchema = new mongoose.Schema(
         isLocked: { type: Boolean, default: false },
         order: { type: Number, default: 0 },
         isDeleted: { type: Boolean, default: false },
+        // Array of user groups this user belongs to
+        userGroups: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'userGroup'
+        }]
     },
     { timestamps: true }
 );

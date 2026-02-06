@@ -7,6 +7,7 @@ import {
     Table,
     Form,
     Typography,
+    Tag,
 } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { convertToAntdTable } from "../../utils/antdTable";
@@ -41,6 +42,7 @@ const UserGroupList = () => {
         if (userGroupToUpdate) {
             userGroupToUpdate.name = data.name;
             userGroupToUpdate.description = data.description;
+            userGroupToUpdate.isDisabled = data.isDisabled ?? false;
             dispatch(updateUserGroup(userGroupToUpdate)).then(() => {
                 dispatch(fetchUserGroupList());
             });
@@ -59,6 +61,7 @@ const UserGroupList = () => {
         setUserGroupToUpdate(record);
         form.setFieldValue("name", record.name);
         form.setFieldValue("description", record.description);
+        form.setFieldValue("isDisabled", record.isDisabled ?? false);
     };
 
     const handleDeleteOnClick = (id) => {
@@ -73,6 +76,19 @@ const UserGroupList = () => {
     };
 
     const customColumns = [
+        {
+            title: "Disabled",
+            key: "isDisabled",
+            render: (text, record) => (
+                <span>
+                    {record.isDisabled ? (
+                        <Tag color="red">Yes</Tag>
+                    ) : (
+                        <Tag color="green">No</Tag>
+                    )}
+                </span>
+            ),
+        },
         {
             title: "Action",
             key: "action",
@@ -109,13 +125,14 @@ const UserGroupList = () => {
         "_id",
         "name",
         "description",
+        "isDisabled",
         "action",
         "delete"
     ]; // Specify the desired order of columns
 
     const { dataSource, columns } = convertToAntdTable(
         userGroup.UserGroupList.items,
-        ["_id", "name", "description", "action", "delete"],
+        ["_id", "name", "description"],
         [],
         customColumns,
         columnOrder

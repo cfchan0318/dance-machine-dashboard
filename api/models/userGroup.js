@@ -10,6 +10,11 @@ const UserGroupSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    isDisabled: {
+        type: Boolean,
+        default: false
+    },
+    
 }, {
     timestamps: true
 });

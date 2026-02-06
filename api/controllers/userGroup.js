@@ -1,10 +1,11 @@
 const express = require('express');
 const UserGroup = require('../models/userGroup')
 const User = require('../models/user')
+const Song = require('../models/song')
 
 const createUserGroup = async (req, res) => {
     try {
-        const { name, description } = req.body;
+        const { name, description, isDisabled } = req.body;
 
         const existingGroup = await UserGroup.findOne({ name });
         if (existingGroup) {
@@ -13,7 +14,8 @@ const createUserGroup = async (req, res) => {
 
         const userGroupToCreate = new UserGroup({
             name,
-            description: description || ''
+            description: description || '',
+            isDisabled: isDisabled ?? false,
         });
 
         await userGroupToCreate.save();
@@ -45,7 +47,7 @@ const getUserGroupById = async (req, res) => {
 
 const updateUserGroup = async (req, res) => {
     try {
-        const { name, description } = req.body;
+        const { name, description, isDisabled } = req.body;
         const id = req.params.id;
 
         const existingGroup = await UserGroup.findOne({ name, _id: { $ne: id } });
@@ -55,7 +57,7 @@ const updateUserGroup = async (req, res) => {
 
         const userGroupToUpdate = await UserGroup.findByIdAndUpdate(
             id,
-            { name, description },
+            { name, description, isDisabled },
             { new: true }
         );
 
@@ -71,6 +73,12 @@ const removeUserGroup = async (req, res) => {
         
         // Remove this group from all users who have it
         await User.updateMany(
+            { userGroups: id },
+            { $pull: { userGroups: id } }
+        );
+
+        // Remove this group from all songs who have it
+        await Song.updateMany(
             { userGroups: id },
             { $pull: { userGroups: id } }
         );

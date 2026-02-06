@@ -1,7 +1,7 @@
-import { Form, Input, Button, InputNumber, Switch, Upload } from "antd";
+import { Form, Input, Button, InputNumber, Switch, Upload, Select } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 
-function SongForm({ form, onFinish, onFinishFailed, clearOnClick, fileList, setFileList }) {
+function SongForm({ form, onFinish, onFinishFailed, clearOnClick, fileList, setFileList, userGroups = [] }) {
     const handleUploadChange = ({ fileList: newFileList }) => {
         setFileList(newFileList);
     };
@@ -22,6 +22,7 @@ function SongForm({ form, onFinish, onFinishFailed, clearOnClick, fileList, setF
                 order: 0,
                 publish: false,
                 isLocked: false,
+                userGroups:[]
             }}
             onFinish={(data) => {
                 onFinish(data);
@@ -70,6 +71,19 @@ function SongForm({ form, onFinish, onFinishFailed, clearOnClick, fileList, setF
 
             <Form.Item label="Is Locked" name="isLocked" valuePropName="checked">
                 <Switch />
+            </Form.Item>
+
+            <Form.Item label="User Groups" name="userGroups">
+                <Select
+                    mode="multiple"
+                    placeholder="Select user groups"
+                    allowClear
+                    style={{ minWidth: 200 }}
+                    options={userGroups.map((g) => ({
+                        label: g.name,
+                        value: g._id,
+                    }))}
+                />
             </Form.Item>
 
             <Form.Item label="Photo" name="photo">

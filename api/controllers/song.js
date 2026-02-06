@@ -17,6 +17,7 @@ const createSong = async (req, res) => {
             photo,
             // Do not allow creating gameLevels from this endpoint
             gameLevels: [],
+            userGroups: req.body.userGroups || [],
         });
 
         await songToCreate.save();
@@ -29,7 +30,7 @@ const createSong = async (req, res) => {
 
 const getAllSongs = async (req, res) => {
     try {
-        const songs = await Song.find({isDeleted:false}).sort('order');
+        const songs = await Song.find({isDeleted:false}).sort('order').populate('userGroups');
         res.status(200).json(songs);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -39,7 +40,7 @@ const getAllSongs = async (req, res) => {
 const getSongById = async (req, res) => {
     try {
         const id = req.params.id;
-        const song = await Song.findById(id);
+        const song = await Song.findById(id).populate('userGroups');
         res.status(200).json(song);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -59,8 +60,11 @@ const updateSong = async (req, res) => {
             publish: req.body.publish,
             order: req.body.order,
             isLocked: req.body.isLocked,
-            isDeleted: req.body.isDeleted,
+            isDeleted: req.body.isDeleted ? req.body.isDeleted : false,
+            userGroups: req.body.userGroups ? req.body.userGroups: [],
         };
+
+        console.log(update);
 
         if (photo) {
             update.photo = photo;
@@ -118,6 +122,7 @@ const getSongs = async (req, res) => {
 
         const total = await Song.countDocuments(query);
         const data = await Song.find(query)
+            .populate('userGroups')
             .sort({ [sortField]: sortDir })
             .skip(skip)
             .limit(limitNumber);
@@ -135,4 +140,16 @@ const getSongs = async (req, res) => {
     }
 };
 
-module.exports = { createSong, getAllSongs, getSongs, getSongById, updateSong, removeSong };
+const getSongsByGroup = async (req, res) => {
+    try {
+        const groupId = req.params.id;
+        const songs = await Song.find({ userGroups: groupId, isDeleted: false })
+            .sort('order')
+            .populate('userGroups');
+        res.status(200).json(songs);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports = { createSong, getAllSongs, getSongs, getSongById, updateSong, removeSong, getSongsByGroup };

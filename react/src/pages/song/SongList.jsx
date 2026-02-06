@@ -6,6 +6,7 @@ import {
     deleteSong,
     updateSong,
 } from "../../store/slices/songSlice";
+import { fetchUserGroupList } from "../../store/slices/userGroupSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { convertToAntdTable } from "../../utils/antdTable";
 import { useEffect, useState } from "react";
@@ -19,6 +20,7 @@ const SongList = () => {
 
     const songForm = useSelector((state) => state.song.songForm);
     const songList = useSelector((state) => state.song.songList);
+    const userGroups = useSelector((state) => state.userGroup.UserGroupList.items);
 
     const [formSongId, setFormSongId] = useState(null);
     const [fileList, setFileList] = useState([]);
@@ -36,6 +38,11 @@ const SongList = () => {
         formData.append("order", data.order);
         formData.append("publish", data.publish ?? false);
         formData.append("isLocked", data.isLocked ?? false);
+
+        // Add user groups
+        if (data.userGroups && data.userGroups.length > 0) {
+            data.userGroups.forEach((id) => formData.append("userGroups", id));
+        }
 
         // Add photo if selected
         if (fileList.length > 0 && fileList[0].originFileObj) {
@@ -64,6 +71,9 @@ const SongList = () => {
             order: record.order ?? 0,
             publish: record.publish,
             isLocked: record.isLocked,
+            userGroups: (record.userGroups || []).map((g) =>
+                typeof g === "object" ? g._id : g
+            ),
         });
         // Clear file list when editing (user can optionally upload new photo)
         setFileList([]);
@@ -137,6 +147,19 @@ const SongList = () => {
             ),
         },
         {
+            title: "User Groups",
+            key: "userGroups",
+            render: (text, record) => (
+                <span>
+                    {(record.userGroups || []).map((g) => (
+                        <Tag color="blue" key={typeof g === "object" ? g._id : g}>
+                            {typeof g === "object" ? g.name : g}
+                        </Tag>
+                    ))}
+                </span>
+            ),
+        },
+        {
             title: "Edit Song Info",
             key: "edit",
             render: (text, record) => (
@@ -190,6 +213,7 @@ const SongList = () => {
         "publish",
         "isLocked",
         "isDeleted",
+        "userGroups",
         "edit",
         "edit_level",
         "delete",
@@ -210,6 +234,7 @@ const SongList = () => {
 
     useEffect(() => {
         dispatch(fetchSongList());
+        dispatch(fetchUserGroupList());
     }, [dispatch]);
 
     return (
@@ -234,6 +259,7 @@ const SongList = () => {
                                         onFinish={handleOnFinish}
                                         fileList={fileList}
                                         setFileList={setFileList}
+                                        userGroups={userGroups}
                                     />
                                 </>
                             )}

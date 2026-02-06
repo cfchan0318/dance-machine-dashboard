@@ -1,4 +1,4 @@
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, Switch } from "antd";
 
 const { TextArea } = Input;
 
@@ -10,7 +10,8 @@ function UserGroupForm({ form, onFinish, onFinishFailed, clearOnClick }) {
             form={form}
             initialValues={{
                 name: "",
-                description: ""
+                description: "",
+                isDisabled: false,
             }}
             onFinish={(data) => {
                 onFinish(data);
@@ -36,6 +37,10 @@ function UserGroupForm({ form, onFinish, onFinishFailed, clearOnClick }) {
                     rows={4}
                     placeholder="Enter group description (optional)"
                 />
+            </Form.Item>
+
+            <Form.Item label="Disabled" name="isDisabled" valuePropName="checked">
+                <Switch />
             </Form.Item>
 
             <Form.Item>
