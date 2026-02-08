@@ -8,7 +8,7 @@ const {
     getSongById,
     updateSong,
     removeSong,
-    getSongsByGroup,
+    getSongsByGroups,
 } = require('../controllers/song');
 
 const { authenticateToken } = require('../middleware/auth');
@@ -16,7 +16,7 @@ const { uploadSongImageToStorage } = require('../utils/songFileStorage');
 
 router.get('/', getAllSongs);
 router.get('/dashboard', getSongs);
-router.get('/group/:id', getSongsByGroup);
+router.post('/by-groups', getSongsByGroups);
 router.get('/:id', getSongById);
 router.post('/', authenticateToken, uploadSongImageToStorage, createSong);
 router.put('/:id', authenticateToken, uploadSongImageToStorage, updateSong);

@@ -140,16 +140,43 @@ const getSongs = async (req, res) => {
     }
 };
 
-const getSongsByGroup = async (req, res) => {
+
+// Get songs by multiple group IDs, return unique songs
+const getSongsByGroups = async (req, res) => {
     try {
-        const groupId = req.params.id;
-        const songs = await Song.find({ userGroups: groupId, isDeleted: false })
+        // Accept group IDs as a comma-separated string or array in query or params
+        let groupIds = req.query.ids || req.body.ids || req.params.ids;
+        if (!groupIds) {
+            return res.status(400).json({ error: 'No group IDs provided' });
+        }
+        if (typeof groupIds === 'string') {
+            groupIds = groupIds.split(',').map(id => id.trim());
+        }
+        // Find all songs that belong to any of the group IDs or have userGroups as null/empty
+        const songs = await Song.find({
+            isDeleted: false,
+            $or: [
+                { userGroups: { $in: groupIds } },
+                { userGroups: { $exists: false } },
+                { userGroups: { $size: 0 } },
+                { userGroups: null }
+            ],
+            $and: [
+                {isLocked: false}
+            ]
+        })
             .sort('order')
             .populate('userGroups');
-        res.status(200).json(songs);
+        // Unique by song._id
+        const uniqueSongsMap = new Map();
+        songs.forEach(song => {
+            uniqueSongsMap.set(String(song._id), song);
+        });
+        const uniqueSongs = Array.from(uniqueSongsMap.values());
+        res.status(200).json(uniqueSongs);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-module.exports = { createSong, getAllSongs, getSongs, getSongById, updateSong, removeSong, getSongsByGroup };
+module.exports = { createSong, getAllSongs, getSongs, getSongById, updateSong, removeSong, getSongsByGroups };
